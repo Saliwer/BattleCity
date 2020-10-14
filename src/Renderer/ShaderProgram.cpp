@@ -84,4 +84,16 @@ bool ShaderProgram::createShader(const char* shaderSource, GLenum shaderType, GL
     return true;
 }
 
+void ShaderProgram::setUniform(const std::string& name, int value)
+{
+    int res = glGetUniformLocation(m_ID, name.c_str());
+    if (res != -1)
+        glUniform1i(res, value);
+    else{
+        std::cerr << "ShaderProgram: Location for uniform '" <<
+        name << "' was not found.\n";
+        return;
+    }
+}
+
 }

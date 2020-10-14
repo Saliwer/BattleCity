@@ -22,6 +22,8 @@ namespace Renderer{
         bool isCompiled() const { return m_isCompiled; }
         void Use() const { glUseProgram(m_ID); }
 
+        void setUniform(const std::string& name, int value);
+
     private:
         bool createShader(const char* shaderSource, GLenum shaderType, GLuint& shaderID);
     };

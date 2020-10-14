@@ -2,9 +2,10 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-#include <memory>
 #include "Renderer/ShaderProgram.h"
+#include "Renderer/Texture2D.h"
 #include "Manager/ResourceManager.h"
+
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
@@ -54,12 +55,16 @@ int main(int argc, char* argv[])
                                "resource/shaders/vertex.vs",
                                "resource/shaders/fragment.fs");
 
+    std::shared_ptr<Renderer::Texture2D> myTexture =
+        resManager.loadTexture("FirstTexture",
+                               "resource/textures/map_16x16.png");
+
 
     GLfloat vertexData[] = {
-        //vertices          //colors
-       -0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-       -1.0f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
+        //vertices          //color             //texture
+        0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.5f, 1.0f,
+        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+       -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f
     };
 
     GLuint vbo = 0;
@@ -73,12 +78,17 @@ int main(int argc, char* argv[])
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GL_FLOAT), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), nullptr);
 
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
 
-    glClearColor(1,1,0,1);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+
+    shaderProgram->Use();
+    shaderProgram->setUniform("myTexture", 0);
+    glClearColor(0.5f, 0.25f, 0, 1);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
@@ -87,8 +97,9 @@ int main(int argc, char* argv[])
 
         shaderProgram->Use();
         glBindVertexArray(vao);
+        myTexture->bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
-
+        myTexture->unbind();
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

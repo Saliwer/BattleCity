@@ -8,8 +8,11 @@ set(CMAKE_BUILD_TYPE Debug)
 add_executable(${PROJECT_NAME} src/main.cpp
                 src/Renderer/ShaderProgram.cpp
                 src/Renderer/ShaderProgram.h
+                src/Renderer/Texture2D.h
+                src/Renderer/Texture2D.cpp
                 src/Manager/ResourceManager.h
-                src/Manager/ResourceManager.cpp)
+                src/Manager/ResourceManager.cpp
+                src/Manager/stb_image.h)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 

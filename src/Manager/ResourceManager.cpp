@@ -1,10 +1,14 @@
 #include "ResourceManager.h"
 
 #include "../Renderer/ShaderProgram.h"
-
+#include "../Renderer/Texture2D.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#include "stb_image.h"
 
 ResourceManager::ResourceManager(const std::string& executablePath)
 {
@@ -70,4 +74,45 @@ std::string ResourceManager::getFileContent(const std::string& filePath)
     std::stringstream s;
     s << f.rdbuf();
     return s.str();
+}
+
+std::shared_ptr<Renderer::Texture2D> ResourceManager::loadTexture(const std::string& textureName,
+                                                                  const std::string& texturePath)
+{
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* pixels = stbi_load(std::string(m_path + "/" + texturePath).c_str(), &width, &height, &channels, 0);
+    if (!pixels)
+    {
+        std::cerr << "ResourseManager: Couldn't load the texture image: " << texturePath << std::endl;
+        return nullptr;
+    }
+
+    auto res = m_textures.emplace(textureName,
+                                  std::make_shared<Renderer::Texture2D>(width,
+                                                                        height,
+                                                                        channels,
+                                                                        pixels,
+                                                                        GL_CLAMP_TO_EDGE,
+                                                                        GL_NEAREST));
+    if (!res.second)
+    {
+        std::cerr << "ResourceManager: Couldn't insert the new texture: " << textureName << std::endl;
+        return nullptr;
+    }
+
+    stbi_image_free(pixels);
+    return res.first->second;
+}
+
+std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::string& textureName)
+{
+    auto it = m_textures.find(textureName);
+    if (it != m_textures.end())
+        return it->second;
+    std::cerr << "ResourceManager: Couldn't find texture with name'" << textureName << "'." << std::endl;
+    return nullptr;
 }
