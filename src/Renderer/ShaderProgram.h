@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <string>
+#include <glm/mat4x4.hpp>
 
 namespace Renderer{
 
@@ -23,8 +24,11 @@ namespace Renderer{
         void Use() const { glUseProgram(m_ID); }
 
         void setUniform(const std::string& name, int value);
-
+        void setUniform(const std::string& name, GLfloat value);
+        void setUniform(const std::string& name, GLfloat x, GLfloat y);
+        void setUniform(const std::string& name, const glm::mat4& matrix);
     private:
+        GLuint getUniformLocation(const std::string& name);
         bool createShader(const char* shaderSource, GLenum shaderType, GLuint& shaderID);
     };
 }

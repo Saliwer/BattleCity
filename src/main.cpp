@@ -5,6 +5,8 @@
 #include "Renderer/ShaderProgram.h"
 #include "Renderer/Texture2D.h"
 #include "Manager/ResourceManager.h"
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
@@ -61,9 +63,9 @@ int main(int argc, char* argv[])
 
     GLfloat vertexData[] = {
         //vertices          //color             //texture
-        0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   0.5f, 1.0f,
-        0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-       -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f
+        0.f,   50.f, 0.0f,  1.0f, 0.0f, 0.0f,   0.5f, 1.0f,
+        50.f, -50.f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
+       -50.f, -50.f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f
     };
 
     GLuint vbo = 0;
@@ -85,7 +87,20 @@ int main(int argc, char* argv[])
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
 
+    glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)g_SCREEN_WIDTH,
+                                            0.0f, (float)g_SCREEN_HEIGHT,
+                                            100.0f, -100.0f);
+
+    glm::mat4 modelMatrix_1 = glm::mat4(1.0f);
+    modelMatrix_1 = glm::translate(modelMatrix_1, glm::vec3(100.0f, 50.0f, 0.0f));
+
+    glm::mat4 modelMatrix_2 = glm::mat4(1.f);
+    modelMatrix_2 = glm::translate(modelMatrix_2, glm::vec3(g_SCREEN_WIDTH/2.f, g_SCREEN_HEIGHT/2.f, 0.f));
+
+
     shaderProgram->Use();
+    shaderProgram->setUniform("projectionMatrix", projectionMatrix);
+
     shaderProgram->setUniform("myTexture", 0);
     glClearColor(0.5f, 0.25f, 0, 1);
     /* Loop until the user closes the window */
@@ -93,10 +108,12 @@ int main(int argc, char* argv[])
     {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
-
-        shaderProgram->Use();
         glBindVertexArray(vao);
+        shaderProgram->Use();
         myTexture->bind();
+        shaderProgram->setUniform("modelMatrix", modelMatrix_1);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        shaderProgram->setUniform("modelMatrix", modelMatrix_2);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         myTexture->unbind();
         /* Swap front and back buffers */

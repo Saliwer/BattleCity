@@ -63,7 +63,8 @@ ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) noexcept
 
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgram(m_ID);
+    if (m_ID)
+        glDeleteProgram(m_ID);
 }
 
 bool ShaderProgram::createShader(const char* shaderSource, GLenum shaderType, GLuint& shaderID)
@@ -84,16 +85,37 @@ bool ShaderProgram::createShader(const char* shaderSource, GLenum shaderType, GL
     return true;
 }
 
-void ShaderProgram::setUniform(const std::string& name, int value)
+GLuint ShaderProgram::getUniformLocation(const std::string& name)
 {
     int res = glGetUniformLocation(m_ID, name.c_str());
-    if (res != -1)
-        glUniform1i(res, value);
-    else{
+    if (res == -1)
+    {
         std::cerr << "ShaderProgram: Location for uniform '" <<
         name << "' was not found.\n";
-        return;
     }
+    return res;
 }
+
+void ShaderProgram::setUniform(const std::string& name, int value)
+{
+    glUniform1i(getUniformLocation(name), value);
+}
+
+void ShaderProgram::setUniform(const std::string& name, GLfloat x, GLfloat y)
+{
+    glUniform2f(getUniformLocation(name), x, y);
+}
+
+void ShaderProgram::setUniform(const std::string& name, GLfloat value)
+{
+    glUniform1f(getUniformLocation(name), value);
+}
+
+void ShaderProgram::setUniform(const std::string& name, const glm::mat4& matrix)
+{
+    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+}
+
+
 
 }
