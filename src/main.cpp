@@ -6,7 +6,6 @@
 #include "Renderer/Texture2D.h"
 #include "Manager/ResourceManager.h"
 
-
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
 
