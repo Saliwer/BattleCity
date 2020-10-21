@@ -21,7 +21,8 @@ namespace Renderer{
         ~ShaderProgram();
 
         bool isCompiled() const { return m_isCompiled; }
-        void Use() const { glUseProgram(m_ID); }
+        void use() const { glUseProgram(m_ID); }
+        void unUse() const { glUseProgram(0); }
 
         void setUniform(const std::string& name, int value);
         void setUniform(const std::string& name, GLfloat value);

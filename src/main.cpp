@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Renderer/ShaderProgram.h"
 #include "Renderer/Texture2D.h"
+#include "Renderer/Sprite.h"
 #include "Manager/ResourceManager.h"
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -60,62 +61,33 @@ int main(int argc, char* argv[])
         resManager.loadTexture("FirstTexture",
                                "resource/textures/map_16x16.png");
 
+    std::shared_ptr<Renderer::Sprite> mySprite =
+        resManager.createSprite("FirstSprite", "FirstProgram", "FirstTexture", 50, 100);
 
-    GLfloat vertexData[] = {
-        //vertices          //color             //texture
-        0.f,   50.f, 0.0f,  1.0f, 0.0f, 0.0f,   0.5f, 1.0f,
-        50.f, -50.f, 0.0f,  0.0f, 1.0f, 0.0f,   1.0f, 0.0f,
-       -50.f, -50.f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f
-    };
+    mySprite->setPosition(glm::vec2(300.f, 100.f));
 
-    GLuint vbo = 0;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 
-    GLuint vao = 0;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3*sizeof(GL_FLOAT)));
-
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)g_SCREEN_WIDTH,
                                             0.0f, (float)g_SCREEN_HEIGHT,
                                             100.0f, -100.0f);
 
-    glm::mat4 modelMatrix_1 = glm::mat4(1.0f);
-    modelMatrix_1 = glm::translate(modelMatrix_1, glm::vec3(100.0f, 50.0f, 0.0f));
 
-    glm::mat4 modelMatrix_2 = glm::mat4(1.f);
-    modelMatrix_2 = glm::translate(modelMatrix_2, glm::vec3(g_SCREEN_WIDTH/2.f, g_SCREEN_HEIGHT/2.f, 0.f));
-
-
-    shaderProgram->Use();
+    shaderProgram->use();
     shaderProgram->setUniform("projectionMatrix", projectionMatrix);
-
     shaderProgram->setUniform("myTexture", 0);
-    glClearColor(0.5f, 0.25f, 0, 1);
+
+
+
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
         /* Render here */
+        glClearColor(0.5f, 0.25f, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
-        glBindVertexArray(vao);
-        shaderProgram->Use();
-        myTexture->bind();
-        shaderProgram->setUniform("modelMatrix", modelMatrix_1);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        shaderProgram->setUniform("modelMatrix", modelMatrix_2);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        myTexture->unbind();
+
+        mySprite->render();
+
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

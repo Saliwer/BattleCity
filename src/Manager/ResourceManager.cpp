@@ -2,6 +2,7 @@
 
 #include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
+#include "../Renderer/Sprite.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -114,5 +115,50 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::stri
     if (it != m_textures.end())
         return it->second;
     std::cerr << "ResourceManager: Couldn't find texture with name'" << textureName << "'." << std::endl;
+    return nullptr;
+}
+
+std::shared_ptr<Renderer::Sprite> ResourceManager::createSprite(const std::string& spriteName,
+                                                                const std::string& shaderName,
+                                                                const std::string& textureName,
+                                                                const unsigned int width,
+                                                                const unsigned int height)
+{
+    std::shared_ptr<Renderer::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
+    if (!pShaderProgram)
+    {
+        std::cerr << "ResourceManager: Couldn't create the new sprite '" <<
+        spriteName << "'\n";
+        return nullptr;
+    }
+
+    std::shared_ptr<Renderer::Texture2D> pTexture = getTexture(textureName);
+    if (!pTexture)
+    {
+        std::cerr << "ResourceManager: Couldn't create the new sprite '" <<
+        spriteName << "'\n";
+        return nullptr;
+    }
+
+    auto res = m_sprites.emplace(spriteName,
+                                 std::make_shared<Renderer::Sprite>(pShaderProgram,
+                                                                    pTexture,
+                                                                    glm::vec2(0.f, 0.f),
+                                                                    glm::vec2(width, height)));
+    if (!res.second)
+    {
+        std::cerr << "ResourceManager: Couldn't insert the new sprite: " << spriteName << std::endl;
+        return nullptr;
+    }
+
+    return res.first->second;
+}
+
+std::shared_ptr<Renderer::Sprite> ResourceManager::getSprite(const std::string& spriteName)
+{
+    auto it = m_sprites.find(spriteName);
+    if (it != m_sprites.end())
+        return it->second;
+    std::cerr << "ResourceManager: Couldn't find a sprite with name'" << spriteName << "'." << std::endl;
     return nullptr;
 }
