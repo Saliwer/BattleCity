@@ -10,6 +10,7 @@ namespace Renderer
 
 Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                std::shared_ptr<Texture2D> pTexture,
+               const std::string& subTextureName,
                const glm::vec2& position,
                const glm::vec2& size,
                float rotation)
@@ -19,17 +20,20 @@ Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                  m_rotation(rotation),
                  m_VBO(0), m_VAO(0)
 {
+
+    const Texture2D::SubTexture& subTexture = m_pTexture->getSubTexture(subTextureName);
+
     GLfloat vertexData[] =
     {
         //vertices      //texture
-        //X   Y         //U   V
-        0.f,  0.f,      0.f,  0.f,
-        1.f,  0.f,      1.f,  0.f,
-        1.f,  1.f,      1.f,  1.f,
+        //X   Y         //U                         V
+        0.f,  0.f,      subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
+        1.f,  0.f,      subTexture.rightTopUV.x,    subTexture.leftBottomUV.y,
+        1.f,  1.f,      subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
 
-        1.f,  1.f,      1.f,  1.f,
-        0.f,  1.f,      0.f,  1.f,
-        0.f,  0.f,      0.f,  0.f
+        1.f,  1.f,      subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
+        0.f,  1.f,      subTexture.leftBottomUV.x,  subTexture.rightTopUV.y,
+        0.f,  0.f,      subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
     };
 
 

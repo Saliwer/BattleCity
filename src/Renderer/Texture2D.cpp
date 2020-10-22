@@ -69,4 +69,41 @@ void Texture2D::unbind() const
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void Texture2D::addSubTexture(const std::string& name, const glm::vec2& leftBottomUV,
+                              const glm::vec2& rightTopUV)
+{
+    auto res = m_subTextures.emplace(name, SubTexture(leftBottomUV, rightTopUV));
+    if (!res.second)
+        return;
+}
+
+const Texture2D::SubTexture& Texture2D::getSubTexture(const std::string& name)
+{
+    auto it = m_subTextures.find(name);
+    if (it != m_subTextures.end())
+        return it->second;
+    const static SubTexture defaultSubTexture;
+    return defaultSubTexture;
+}
+
+void Texture2D::genSubTextures(const std::vector<std::string>& names, const glm::vec2& leftTop,
+                               const glm::vec2& sizeSubTexture)
+{
+    float coordX = leftTop.x;
+    float coordY = leftTop.y;
+
+    for (const auto& subText : names)
+    {
+        glm::vec2 leftUV(coordX / getWidth(), (coordY - sizeSubTexture.y) / getHeight());
+        glm::vec2 rightUV((coordX + sizeSubTexture.x) / getWidth(), coordY / getHeight());
+        addSubTexture(subText, leftUV, rightUV);
+        coordX+= sizeSubTexture.x;
+        if (coordX >= getWidth())
+        {
+            coordX = leftTop.x;
+            coordY -= sizeSubTexture.y;
+        }
+    }
+}
+
 }

@@ -47,6 +47,7 @@ public:
     std::shared_ptr<Renderer::Sprite> createSprite(const std::string& spriteName,
                                                    const std::string& shaderName,
                                                    const std::string& textureName,
+                                                   const std::string& subTextureName,
                                                    const unsigned int width,
                                                    const unsigned int height);
 

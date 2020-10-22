@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#include <vector>
+#include <string>
+
 #include "Renderer/ShaderProgram.h"
 #include "Renderer/Texture2D.h"
 #include "Renderer/Sprite.h"
@@ -61,12 +64,19 @@ int main(int argc, char* argv[])
         resManager.loadTexture("FirstTexture",
                                "resource/textures/map_16x16.png");
 
-    std::shared_ptr<Renderer::Sprite> mySprite =
-        resManager.createSprite("FirstSprite", "FirstProgram", "FirstTexture", 50, 100);
 
-    mySprite->setPosition(glm::vec2(300.f, 100.f));
+    std::vector<std::string> subTextures = {"Brick", "BrickTop", "BrickBottom", "BrickLeft",
+                                            "BrickRight", "BrickTopLeft", "BrickTopRight",
+                                            "BrickBottomLeft", "BrickBottomRight", "Beton"};
+    myTexture->genSubTextures(subTextures, glm::vec2(0.f, (float)myTexture->getHeight()), glm::vec2(16.f, 16.f));
 
+    std::shared_ptr<Renderer::Sprite> brickSprite =
+        resManager.createSprite("BrickSprite", "FirstProgram", "FirstTexture", "Brick" ,50, 50);
+    brickSprite->setPosition(glm::vec2(300.f, 100.f));
 
+    std::shared_ptr<Renderer::Sprite> betonSprite =
+        resManager.createSprite("BetonSprite", "FirstProgram", "FirstTexture", "Beton" ,50, 50);
+    betonSprite->setPosition(glm::vec2(250.f, 100.f));
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)g_SCREEN_WIDTH,
                                             0.0f, (float)g_SCREEN_HEIGHT,
@@ -86,8 +96,8 @@ int main(int argc, char* argv[])
         glClearColor(0.5f, 0.25f, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        mySprite->render();
-
+        brickSprite->render();
+        betonSprite->render();
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
 

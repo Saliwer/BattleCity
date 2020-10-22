@@ -121,6 +121,7 @@ std::shared_ptr<Renderer::Texture2D> ResourceManager::getTexture(const std::stri
 std::shared_ptr<Renderer::Sprite> ResourceManager::createSprite(const std::string& spriteName,
                                                                 const std::string& shaderName,
                                                                 const std::string& textureName,
+                                                                const std::string& subTextureName,
                                                                 const unsigned int width,
                                                                 const unsigned int height)
 {
@@ -143,6 +144,7 @@ std::shared_ptr<Renderer::Sprite> ResourceManager::createSprite(const std::strin
     auto res = m_sprites.emplace(spriteName,
                                  std::make_shared<Renderer::Sprite>(pShaderProgram,
                                                                     pTexture,
+                                                                    subTextureName,
                                                                     glm::vec2(0.f, 0.f),
                                                                     glm::vec2(width, height)));
     if (!res.second)
