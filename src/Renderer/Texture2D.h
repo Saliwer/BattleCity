@@ -8,19 +8,19 @@
 
 namespace Renderer{
 
+struct SubTexture
+{
+    glm::vec2 leftBottomUV;
+    glm::vec2 rightTopUV;
+
+    SubTexture(const glm::vec2& _leftBottomUV = glm::vec2(0.f),
+               const glm::vec2& _rightTopUV = glm::vec2(1.f)) :
+               leftBottomUV(_leftBottomUV), rightTopUV(_rightTopUV)
+    {}
+};
+
 class Texture2D{
 public:
-
-    struct SubTexture
-    {
-        glm::vec2 leftBottomUV;
-        glm::vec2 rightTopUV;
-
-        SubTexture(const glm::vec2& _leftBottomUV = glm::vec2(0.f),
-                   const glm::vec2& _rightTopUV = glm::vec2(1.f)) :
-                   leftBottomUV(_leftBottomUV), rightTopUV(_rightTopUV)
-        {}
-    };
 
     Texture2D(int width, int height, int channels, unsigned char* data,
               GLenum wrap = GL_CLAMP_TO_EDGE, GLenum filter = GL_LINEAR);

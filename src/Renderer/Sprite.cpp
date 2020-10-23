@@ -16,12 +16,13 @@ Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                float rotation)
                : m_pShaderProg(std::move(pShaderProg)),
                  m_pTexture(std::move(pTexture)),
+                 m_subTextureName(subTextureName),
                  m_position(position), m_size(size),
                  m_rotation(rotation),
                  m_VBO(0), m_VAO(0)
 {
 
-    const Texture2D::SubTexture& subTexture = m_pTexture->getSubTexture(subTextureName);
+    const SubTexture& subTexture = m_pTexture->getSubTexture(m_subTextureName);
 
     GLfloat vertexData[] =
     {
@@ -63,7 +64,7 @@ Sprite::~Sprite()
     glDeleteVertexArrays(1, &m_VAO);
 }
 
-void Sprite::render() const
+void Sprite::render()
 {
     m_pShaderProg->use();
     glm::mat4 modelMatrix = glm::mat4(1.f);
@@ -88,6 +89,30 @@ void Sprite::render() const
 
 }
 
+void Sprite::setSubTexture(const std::string& name)
+{
+    m_subTextureName = name;
+    changeTextureCoord(m_pTexture->getSubTexture(m_subTextureName));
+}
 
+void Sprite::changeTextureCoord(const SubTexture& newCoords)
+{
+    GLfloat vertexData[] =
+    {
+        //vertices      //texture
+        //X   Y         //U                         V
+        0.f,  0.f,      newCoords.leftBottomUV.x,  newCoords.leftBottomUV.y,
+        1.f,  0.f,      newCoords.rightTopUV.x,    newCoords.leftBottomUV.y,
+        1.f,  1.f,      newCoords.rightTopUV.x,    newCoords.rightTopUV.y,
+
+        1.f,  1.f,      newCoords.rightTopUV.x,    newCoords.rightTopUV.y,
+        0.f,  1.f,      newCoords.leftBottomUV.x,  newCoords.rightTopUV.y,
+        0.f,  0.f,      newCoords.leftBottomUV.x,  newCoords.leftBottomUV.y,
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertexData), vertexData);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 }
