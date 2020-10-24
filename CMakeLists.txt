@@ -14,6 +14,10 @@ add_executable(${PROJECT_NAME} src/main.cpp
 		src/Renderer/Sprite.cpp
          	src/Renderer/AnimatedSprite.h
 		src/Renderer/AnimatedSprite.cpp
+		
+		src/Game/Game.h
+		src/Game/Game.cpp
+
 		src/Manager/ResourceManager.h
                 src/Manager/ResourceManager.cpp
                 src/Manager/stb_image.h)
