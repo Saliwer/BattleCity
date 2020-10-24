@@ -44,7 +44,9 @@ namespace Renderer
         void setPosition(const glm::vec2& position){ m_position = position; }
         void setSize(const glm::vec2& size){ m_size = size; }
         void setRotation(float angle){ m_rotation = angle; }
-
+        const glm::vec2& getPosition() const { return m_position; }
+        const glm::vec2& getSize() const { return m_size; }
+        float getRotation() const { return m_rotation; }
     protected:
         void changeTextureCoord(const SubTexture& newCoords);
     };

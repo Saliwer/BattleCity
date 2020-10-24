@@ -5,6 +5,7 @@
 // STL
 #include <iostream>
 #include <chrono>
+#include <memory>
 
 // My classes
 #include "Game/Game.h"
@@ -17,21 +18,22 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
 
 glm::ivec2 g_WindowSize = glm::ivec2(640, 480);
-Game g_Game = Game(g_WindowSize);
+std::unique_ptr<Game> g_Game = std::make_unique<Game>(g_WindowSize);
 
 int main(int argc, char* argv[])
 {
-    /* Initialize the library */
+    // Initialize the library
     if (!glfwInit()){
         std::cerr << "GLFW init failed!\n";
         return -1;
     }
 
+    // Set OpenGL version
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    /* Create a windowed mode window and its OpenGL context */
+    // Create a windowed mode window and its OpenGL context
     GLFWwindow* window = glfwCreateWindow(g_WindowSize.x, g_WindowSize.y, "Hello World", NULL, NULL);
     if (!window)
     {
@@ -40,12 +42,14 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    // Set callback functions
     glfwSetFramebufferSizeCallback(window, WindowResizeCallback);
     glfwSetKeyCallback(window, KeyCallback);
 
-    /* Make the window's context current */
+    // Make the window's context current
     glfwMakeContextCurrent(window);
 
+    // Load GLAD functions
     if (!gladLoadGL())
     {
         std::cerr << "Failed to initialize GLAD" << std::endl;
@@ -55,36 +59,50 @@ int main(int argc, char* argv[])
     // ResourceManager init
     ResourceManager::setExecutablePath(argv[0]);
 
-    //Game init
-    if (!g_Game.init())
+    // Game init
+    if (!g_Game->init())
     {
         std::cerr << "Couldn't init game!\n";
         return -1;
     }
 
     auto lastTime = std::chrono::high_resolution_clock::now();
-    /* Loop until the user closes the window */
+
+    // game loop
+    //----------
     while (!glfwWindowShouldClose(window))
     {
+        // calculate delta time
+        //---------------------
         auto currentTime = std::chrono::high_resolution_clock::now();
-        uint64_t duration = std::chrono::duration_cast<std::chrono::nanoseconds>
+        uint64_t duration = std::chrono::duration_cast<std::chrono::microseconds>
                                          (currentTime - lastTime).count();
         lastTime = currentTime;
-        /* Render here */
+
+        // poll for and process events
+        //----------------------------
+        glfwPollEvents();
+        g_Game->processInput(duration);
+
+        // update game state
+        //------------------
+        g_Game->update(duration);
+
+        // render
+        //-------
         glClearColor(0.5f, 0.25f, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
+        g_Game->render();
 
-        g_Game.update(duration);
-        g_Game.render();
-
-        /* Swap front and back buffers */
+        // Swap front and back buffers
+        //----------------------------
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
     }
-    ResourceManager::unloadResources();
 
+    // clean-up before exit
+    //---------------------
+    g_Game->terminate();
+    ResourceManager::unloadResources();
     glfwTerminate();
     return 0;
 }
@@ -94,7 +112,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
         glfwSetWindowShouldClose(window, true);
     }
-    g_Game.setKey(key, action);
+    g_Game->setKey(key, action);
 }
 
 void WindowResizeCallback(GLFWwindow* window, int width, int height)

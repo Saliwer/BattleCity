@@ -8,10 +8,13 @@
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
+#include "Tank.h"
 
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
 
 Game::Game(const glm::ivec2& windowSize) : m_windowSize(windowSize),
                                            m_gameState(EGameState::ACTIVE)
@@ -24,64 +27,122 @@ Game::~Game()
 
 bool Game::init()
 {
-    std::shared_ptr<Renderer::ShaderProgram> shaderProgram =
-        ResourceManager::loadShaders("FirstProgram",
-                               "resource/shaders/vertex.vs",
-                               "resource/shaders/fragment.fs");
-    if (!shaderProgram)
+    std::shared_ptr<Renderer::ShaderProgram> tankShaderProgram =
+        ResourceManager::loadShaders("TankShaderProgram",
+                                     "resource/shaders/vertex.vs",
+                                     "resource/shaders/fragment.fs");
+    if (!tankShaderProgram)
         return false;
 
-    std::shared_ptr<Renderer::Texture2D> myTexture =
-        ResourceManager::loadTexture("FirstTexture",
-                               "resource/textures/map_16x16.png");
-    if (!myTexture)
+    std::shared_ptr<Renderer::Texture2D> tanksTexture =
+        ResourceManager::loadTexture("TanksTexture",
+                                     "resource/textures/tanks.png");
+    if (!tanksTexture)
         return false;
 
 
-    std::vector<std::string> subTextures = {"Brick", "BrickTop", "BrickBottom", "BrickLeft",
-                                            "BrickRight", "BrickTopLeft", "BrickTopRight",
-                                            "BrickBottomLeft", "BrickBottomRight", "Beton"};
+    std::vector<std::string> subTextures = {
+        "TankUp1",
+        "TankUp2",
+        "TankLeft1",
+        "TankLeft2",
+        "TankDown1",
+        "TankDown2",
+        "TankRight1",
+        "TankRight2"
+    };
 
-    myTexture->genSubTextures(subTextures, glm::vec2(0.f, (float)myTexture->getHeight()), glm::vec2(16.f, 16.f));
+    tanksTexture->genSubTextures(subTextures,
+                                 glm::vec2(0.f, (float)tanksTexture->getHeight()),
+                                 glm::vec2(16.f, 16.f));
 
-    std::shared_ptr<Renderer::Sprite> brickSprite =
-        ResourceManager::createSprite("BrickSprite", "FirstProgram", "FirstTexture", "Brick", 50, 50);
-    brickSprite->setPosition(glm::vec2(300.f, 100.f));
+    std::shared_ptr<Renderer::AnimatedSprite> pTankAnimeSprite =
+        ResourceManager::createAnimatedSprite("TankAnimeSprite", "TankShaderProgram", "TanksTexture", 50, 50);
 
-    std::shared_ptr<Renderer::Sprite> betonSprite =
-        ResourceManager::createSprite("BetonSprite", "FirstProgram", "FirstTexture", "Beton", 50, 50);
-    betonSprite->setPosition(glm::vec2(250.f, 100.f));
-    betonSprite->setSubTexture("BrickTopLeft");
+    if (!pTankAnimeSprite)
+        return false;
 
-    std::shared_ptr<Renderer::AnimatedSprite> pAnimeSprite =
-        ResourceManager::createAnimatedSprite("AnimeSprite", "FirstProgram", "FirstTexture", 50, 50);
+    std::list<std::pair<std::string, uint64_t>> tankStatesUp;
+    std::list<std::pair<std::string, uint64_t>> tankStatesLeft;
+    std::list<std::pair<std::string, uint64_t>> tankStatesRight;
+    std::list<std::pair<std::string, uint64_t>> tankStatesDown;
+    tankStatesUp.emplace_back("TankUp1", 0.5e6);
+    tankStatesUp.emplace_back("TankUp2", 0.5e6);
+    tankStatesLeft.emplace_back("TankLeft1", 0.5e6);
+    tankStatesLeft.emplace_back("TankLeft2", 0.5e6);
+    tankStatesDown.emplace_back("TankDown1", 0.5e6);
+    tankStatesDown.emplace_back("TankDown2", 0.5e6);
+    tankStatesRight.emplace_back("TankRight1", 0.5e6);
+    tankStatesRight.emplace_back("TankRight2", 0.5e6);
 
-    pAnimeSprite->setPosition(glm::vec2(100.f, 100.f));
+    pTankAnimeSprite->insertState("tankStatesUp", std::move(tankStatesUp));
+    pTankAnimeSprite->insertState("tankStatesLeft", std::move(tankStatesLeft));
+    pTankAnimeSprite->insertState("tankStatesRight", std::move(tankStatesRight));
+    pTankAnimeSprite->insertState("tankStatesDown", std::move(tankStatesDown));
 
-    for (auto& elem : subTextures)
-        pAnimeSprite->addSubTexture(elem, 1e9);
+    pTankAnimeSprite->setState("tankStatesUp");
+
+
+    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(300.f, 250.f), 0.00015f);
+
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
                                             0.0f, (float)m_windowSize.y,
                                             100.0f, -100.0f);
 
 
-    shaderProgram->use();
-    shaderProgram->setUniform("projectionMatrix", projectionMatrix);
-    shaderProgram->setUniform("myTexture", 0);
-    shaderProgram->unUse();
+    tankShaderProgram->use();
+    tankShaderProgram->setUniform("projectionMatrix", projectionMatrix);
+    tankShaderProgram->setUniform("myTexture", 0);
+    tankShaderProgram->unUse();
 
     return true;
 }
 
+void Game::terminate()
+{
+    Tank* p = m_pTank.release();
+    delete p;
+}
+
 void Game::render()
 {
-    ResourceManager::getAnimatedSprite("AnimeSprite")->render();
+    //ResourceManager::getAnimatedSprite("AnimeSprite")->render();
+    if (m_pTank)
+        m_pTank->render();
 }
 
 void Game::update(uint64_t deltaTime)
 {
-    ResourceManager::getAnimatedSprite("AnimeSprite")->update(deltaTime);
+   // ResourceManager::getAnimatedSprite("AnimeSprite")->update(deltaTime);
+    if (m_pTank)
+        m_pTank->update(deltaTime);
+}
+
+void Game::processInput(uint64_t deltaTime)
+{
+    if (m_keys[GLFW_KEY_W]){
+        m_pTank->setDirection(glm::vec2(0.f, 1.f));
+        m_pTank->setSpriteState("tankStatesUp");
+        m_pTank->move(true);
+    }
+    else if (m_keys[GLFW_KEY_D]){
+        m_pTank->setDirection(glm::vec2(1.f, 0.f));
+        m_pTank->setSpriteState("tankStatesRight");
+        m_pTank->move(true);
+    }
+    else if (m_keys[GLFW_KEY_S]){
+        m_pTank->setDirection(glm::vec2(0.f, -1.f));
+        m_pTank->setSpriteState("tankStatesDown");
+        m_pTank->move(true);
+    }
+    else if(m_keys[GLFW_KEY_A]){
+        m_pTank->setDirection(glm::vec2(-1.f, 0.f));
+        m_pTank->setSpriteState("tankStatesLeft");
+        m_pTank->move(true);
+    }
+    else
+        m_pTank->move(false);
 }
 
 void Game::setKey(int key, int action)
