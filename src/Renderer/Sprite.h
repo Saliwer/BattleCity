@@ -1,5 +1,10 @@
 #pragma once
 
+
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+
 #include <glad/glad.h>
 #include <memory>
 #include <glm/vec2.hpp>
@@ -19,8 +24,10 @@ namespace Renderer
         glm::vec2                       m_position;
         glm::vec2                       m_size;
         float                           m_rotation;
-        GLuint                          m_VBO;
-        GLuint                          m_VAO;
+        VertexBuffer                    m_vertexCoords;
+        VertexBuffer                    m_textureCoords;
+        IndexBuffer                     m_indices;
+        VertexArray                     m_vertexArray;
 
     public:
         Sprite(std::shared_ptr<ShaderProgram> pShaderProg,

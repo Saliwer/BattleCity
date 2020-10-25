@@ -66,14 +66,14 @@ bool Game::init()
     std::list<std::pair<std::string, uint64_t>> tankStatesLeft;
     std::list<std::pair<std::string, uint64_t>> tankStatesRight;
     std::list<std::pair<std::string, uint64_t>> tankStatesDown;
-    tankStatesUp.emplace_back("TankUp1", 0.5e6);
-    tankStatesUp.emplace_back("TankUp2", 0.5e6);
-    tankStatesLeft.emplace_back("TankLeft1", 0.5e6);
-    tankStatesLeft.emplace_back("TankLeft2", 0.5e6);
-    tankStatesDown.emplace_back("TankDown1", 0.5e6);
-    tankStatesDown.emplace_back("TankDown2", 0.5e6);
-    tankStatesRight.emplace_back("TankRight1", 0.5e6);
-    tankStatesRight.emplace_back("TankRight2", 0.5e6);
+    tankStatesUp.emplace_back("TankUp1", 1.5e5);
+    tankStatesUp.emplace_back("TankUp2", 1.5e5);
+    tankStatesLeft.emplace_back("TankLeft1", 1.5e5);
+    tankStatesLeft.emplace_back("TankLeft2", 1.5e5);
+    tankStatesDown.emplace_back("TankDown1", 1.5e5);
+    tankStatesDown.emplace_back("TankDown2", 1.5e5);
+    tankStatesRight.emplace_back("TankRight1", 1.5e5);
+    tankStatesRight.emplace_back("TankRight2", 1.5e5);
 
     pTankAnimeSprite->insertState("tankStatesUp", std::move(tankStatesUp));
     pTankAnimeSprite->insertState("tankStatesLeft", std::move(tankStatesLeft));
@@ -83,7 +83,7 @@ bool Game::init()
     pTankAnimeSprite->setState("tankStatesUp");
 
 
-    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(300.f, 250.f), 0.00015f);
+    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(300.f, 250.f), 2.f);
 
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
@@ -107,14 +107,12 @@ void Game::terminate()
 
 void Game::render()
 {
-    //ResourceManager::getAnimatedSprite("AnimeSprite")->render();
     if (m_pTank)
         m_pTank->render();
 }
 
 void Game::update(uint64_t deltaTime)
 {
-   // ResourceManager::getAnimatedSprite("AnimeSprite")->update(deltaTime);
     if (m_pTank)
         m_pTank->update(deltaTime);
 }

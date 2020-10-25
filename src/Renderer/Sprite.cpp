@@ -18,50 +18,60 @@ Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                  m_pTexture(std::move(pTexture)),
                  m_subTextureName(subTextureName),
                  m_position(position), m_size(size),
-                 m_rotation(rotation),
-                 m_VBO(0), m_VAO(0)
+                 m_rotation(rotation)
 {
 
     const SubTexture& subTexture = m_pTexture->getSubTexture(m_subTextureName);
 
     GLfloat vertexData[] =
     {
-        //vertices      //texture
-        //X   Y         //U                         V
-        0.f,  0.f,      subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
-        1.f,  0.f,      subTexture.rightTopUV.x,    subTexture.leftBottomUV.y,
-        1.f,  1.f,      subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
-
-        1.f,  1.f,      subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
-        0.f,  1.f,      subTexture.leftBottomUV.x,  subTexture.rightTopUV.y,
-        0.f,  0.f,      subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
+        //vertices
+        //X   Y
+        0.f,  0.f,
+        1.f,  0.f,
+        1.f,  1.f,
+        0.f,  1.f
     };
 
+    GLfloat textureCoords[] =
+    {
+        //texture
+        //U                         V
+        subTexture.leftBottomUV.x,  subTexture.leftBottomUV.y,
+        subTexture.rightTopUV.x,    subTexture.leftBottomUV.y,
+        subTexture.rightTopUV.x,    subTexture.rightTopUV.y,
+        subTexture.leftBottomUV.x,  subTexture.rightTopUV.y
+    };
 
-    glGenBuffers(1, &m_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+    GLuint indices[] =
+    {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    m_vertexCoords.init(vertexData, 2 * 4 *sizeof(GLfloat));
+    m_textureCoords.init(textureCoords, 2 * 4 * sizeof(GLfloat));
+
+    VertexBufferLayout vertexLayout;
+    vertexLayout.addLayoutFloat(2, false);
+    m_vertexArray.addBuffer(m_vertexCoords, vertexLayout);
 
 
-    glGenVertexArrays(1, &m_VAO);
-    glBindVertexArray(m_VAO);
+    VertexBufferLayout textureLayout;
+    textureLayout.addLayoutFloat(2, false);
+    m_vertexArray.addBuffer(m_textureCoords, textureLayout);
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)0);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(GL_FLOAT), (void*)(2*sizeof(GL_FLOAT)));
+    m_indices.init(indices, 6 * sizeof(GLuint));
 
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    m_textureCoords.unbind();
+    m_indices.unbind();
 }
 
 
 Sprite::~Sprite()
 {
-    glDeleteBuffers(1, &m_VBO);
-    glDeleteVertexArrays(1, &m_VAO);
+
 }
 
 void Sprite::render()
@@ -75,17 +85,16 @@ void Sprite::render()
     modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f * m_size.x, -0.5f * m_size.y, 0.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(m_size, 1.f));
 
-    glBindVertexArray(m_VAO);
+    m_vertexArray.bind();
     glActiveTexture(GL_TEXTURE0);
 
 
     m_pTexture->bind();
     m_pShaderProg->setUniform("modelMatrix", modelMatrix);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     m_pShaderProg->unUse();
     m_pTexture->unbind();
-    glBindVertexArray(0);
+    m_vertexArray.unbind();
 
 }
 
@@ -99,20 +108,15 @@ void Sprite::changeTextureCoord(const SubTexture& newCoords)
 {
     GLfloat vertexData[] =
     {
-        //vertices      //texture
-        //X   Y         //U                         V
-        0.f,  0.f,      newCoords.leftBottomUV.x,  newCoords.leftBottomUV.y,
-        1.f,  0.f,      newCoords.rightTopUV.x,    newCoords.leftBottomUV.y,
-        1.f,  1.f,      newCoords.rightTopUV.x,    newCoords.rightTopUV.y,
-
-        1.f,  1.f,      newCoords.rightTopUV.x,    newCoords.rightTopUV.y,
-        0.f,  1.f,      newCoords.leftBottomUV.x,  newCoords.rightTopUV.y,
-        0.f,  0.f,      newCoords.leftBottomUV.x,  newCoords.leftBottomUV.y,
+        //texture
+        //U                        V
+        newCoords.leftBottomUV.x,  newCoords.leftBottomUV.y,
+        newCoords.rightTopUV.x,    newCoords.leftBottomUV.y,
+        newCoords.rightTopUV.x,    newCoords.rightTopUV.y,
+        newCoords.leftBottomUV.x,  newCoords.rightTopUV.y,
     };
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertexData), vertexData);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    m_textureCoords.update(vertexData, 2 * 4 * sizeof(GLfloat));
 }
 
 }
