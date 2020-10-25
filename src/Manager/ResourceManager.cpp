@@ -1,10 +1,10 @@
 #include "ResourceManager.h"
 
-#include "../Renderer/ShaderProgram.h"
+#include "../Renderer/AnimatedSprite.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
-
+#include "../Renderer/ShaderProgram.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -37,7 +37,7 @@ void ResourceManager::unloadResources()
 }
 
 
-std::shared_ptr<Renderer::ShaderProgram>
+std::shared_ptr<RenderEngine::ShaderProgram>
 ResourceManager::loadShaders(const std::string& progName,
                              const std::string& vertexPath,
                              const std::string& fragmentPath)
@@ -56,14 +56,14 @@ ResourceManager::loadShaders(const std::string& progName,
         return nullptr;
     }
 
-    auto res = m_programs.emplace(progName, std::make_shared<Renderer::ShaderProgram>(vertexCode, fragmentCode));
+    auto res = m_programs.emplace(progName, std::make_shared<RenderEngine::ShaderProgram>(vertexCode, fragmentCode));
     if (!res.second)
     {
         std::cerr << "ResourceManager: couldn't insert new shader program '" << progName << "'\n";
         return nullptr;
     }
 
-    std::shared_ptr<Renderer::ShaderProgram>& newProgram = res.first->second;
+    std::shared_ptr<RenderEngine::ShaderProgram>& newProgram = res.first->second;
     if (newProgram->isCompiled())
         return newProgram;
 
@@ -74,7 +74,7 @@ ResourceManager::loadShaders(const std::string& progName,
 
 }
 
-std::shared_ptr<Renderer::ShaderProgram>
+std::shared_ptr<RenderEngine::ShaderProgram>
 ResourceManager::getShaderProgram(const std::string& progName)
 {
     auto it = m_programs.find(progName);
@@ -99,7 +99,7 @@ std::string ResourceManager::getFileContent(const std::string& filePath)
     return s.str();
 }
 
-std::shared_ptr<Renderer::Texture2D>
+std::shared_ptr<RenderEngine::Texture2D>
 ResourceManager::loadTexture(const std::string& textureName,
                              const std::string& texturePath)
 {
@@ -116,7 +116,7 @@ ResourceManager::loadTexture(const std::string& textureName,
     }
 
     auto res = m_textures.emplace(textureName,
-                                  std::make_shared<Renderer::Texture2D>(width,
+                                  std::make_shared<RenderEngine::Texture2D>(width,
                                                                         height,
                                                                         channels,
                                                                         pixels,
@@ -132,7 +132,7 @@ ResourceManager::loadTexture(const std::string& textureName,
     return res.first->second;
 }
 
-std::shared_ptr<Renderer::Texture2D>
+std::shared_ptr<RenderEngine::Texture2D>
 ResourceManager::getTexture(const std::string& textureName)
 {
     auto it = m_textures.find(textureName);
@@ -142,7 +142,7 @@ ResourceManager::getTexture(const std::string& textureName)
     return nullptr;
 }
 
-std::shared_ptr<Renderer::Sprite>
+std::shared_ptr<RenderEngine::Sprite>
 ResourceManager::createSprite(const std::string& spriteName,
                               const std::string& shaderName,
                               const std::string& textureName,
@@ -150,7 +150,7 @@ ResourceManager::createSprite(const std::string& spriteName,
                               const unsigned int width,
                               const unsigned int height)
 {
-    std::shared_ptr<Renderer::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
+    std::shared_ptr<RenderEngine::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
     if (!pShaderProgram)
     {
         std::cerr << "ResourceManager: Couldn't create the new sprite '" <<
@@ -158,7 +158,7 @@ ResourceManager::createSprite(const std::string& spriteName,
         return nullptr;
     }
 
-    std::shared_ptr<Renderer::Texture2D> pTexture = getTexture(textureName);
+    std::shared_ptr<RenderEngine::Texture2D> pTexture = getTexture(textureName);
     if (!pTexture)
     {
         std::cerr << "ResourceManager: Couldn't create the new sprite '" <<
@@ -167,7 +167,7 @@ ResourceManager::createSprite(const std::string& spriteName,
     }
 
     auto res = m_sprites.emplace(spriteName,
-                                 std::make_shared<Renderer::Sprite>(pShaderProgram,
+                                 std::make_shared<RenderEngine::Sprite>(pShaderProgram,
                                                                     pTexture,
                                                                     subTextureName,
                                                                     glm::vec2(0.f, 0.f),
@@ -181,7 +181,7 @@ ResourceManager::createSprite(const std::string& spriteName,
     return res.first->second;
 }
 
-std::shared_ptr<Renderer::Sprite>
+std::shared_ptr<RenderEngine::Sprite>
 ResourceManager::getSprite(const std::string& spriteName)
 {
     auto it = m_sprites.find(spriteName);
@@ -191,14 +191,14 @@ ResourceManager::getSprite(const std::string& spriteName)
     return nullptr;
 }
 
-std::shared_ptr<Renderer::AnimatedSprite>
+std::shared_ptr<RenderEngine::AnimatedSprite>
 ResourceManager::createAnimatedSprite(const std::string& spriteName,
                                       const std::string& shaderName,
                                       const std::string& textureName,
                                       const unsigned int width,
                                       const unsigned int height)
 {
-    std::shared_ptr<Renderer::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
+    std::shared_ptr<RenderEngine::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
     if (!pShaderProgram)
     {
         std::cerr << "ResourceManager: Couldn't create the new animated sprite '" <<
@@ -206,7 +206,7 @@ ResourceManager::createAnimatedSprite(const std::string& spriteName,
         return nullptr;
     }
 
-    std::shared_ptr<Renderer::Texture2D> pTexture = getTexture(textureName);
+    std::shared_ptr<RenderEngine::Texture2D> pTexture = getTexture(textureName);
     if (!pTexture)
     {
         std::cerr << "ResourceManager: Couldn't create the animated new sprite '" <<
@@ -215,7 +215,7 @@ ResourceManager::createAnimatedSprite(const std::string& spriteName,
     }
 
     auto res = m_animatedSprites.emplace(spriteName,
-                                         std::make_shared<Renderer::AnimatedSprite>
+                                         std::make_shared<RenderEngine::AnimatedSprite>
                                          (pShaderProgram, pTexture,
                                           glm::vec2(0.f, 0.f), glm::vec2(width, height)));
     if (!res.second)
@@ -228,7 +228,7 @@ ResourceManager::createAnimatedSprite(const std::string& spriteName,
     return res.first->second;
 }
 
-std::shared_ptr<Renderer::AnimatedSprite>
+std::shared_ptr<RenderEngine::AnimatedSprite>
 ResourceManager::getAnimatedSprite(const std::string& spriteName)
 {
     auto it = m_animatedSprites.find(spriteName);

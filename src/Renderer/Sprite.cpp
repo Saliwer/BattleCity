@@ -1,11 +1,12 @@
 #include "Sprite.h"
 #include "ShaderProgram.h"
+#include "Renderer.h"
 #include "Texture2D.h"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace Renderer
+namespace RenderEngine
 {
 
 Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
@@ -91,11 +92,8 @@ void Sprite::render()
 
     m_pTexture->bind();
     m_pShaderProg->setUniform("modelMatrix", modelMatrix);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    m_pShaderProg->unUse();
-    m_pTexture->unbind();
-    m_vertexArray.unbind();
 
+    RenderEngine::Renderer::draw(m_vertexArray, m_indices, *m_pShaderProg);
 }
 
 void Sprite::setSubTexture(const std::string& name)

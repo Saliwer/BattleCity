@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-namespace Renderer{
+namespace RenderEngine{
 
 struct SubTexture
 {

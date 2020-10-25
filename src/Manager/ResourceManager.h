@@ -4,7 +4,7 @@
 #include <map>
 #include <memory>
 
-namespace Renderer
+namespace RenderEngine
 {
     class ShaderProgram;
     class Texture2D;
@@ -15,10 +15,10 @@ namespace Renderer
 
 class ResourceManager
 {
-    using MapShaderPrograms = std::map<std::string, std::shared_ptr<Renderer::ShaderProgram>>;
-    using MapTextures = std::map<std::string, std::shared_ptr<Renderer::Texture2D>>;
-    using MapSprites = std::map<std::string, std::shared_ptr<Renderer::Sprite>>;
-    using MapAnimatedSprites = std::map<std::string, std::shared_ptr<Renderer::AnimatedSprite>>;
+    using MapShaderPrograms = std::map<std::string, std::shared_ptr<RenderEngine::ShaderProgram>>;
+    using MapTextures = std::map<std::string, std::shared_ptr<RenderEngine::Texture2D>>;
+    using MapSprites = std::map<std::string, std::shared_ptr<RenderEngine::Sprite>>;
+    using MapAnimatedSprites = std::map<std::string, std::shared_ptr<RenderEngine::AnimatedSprite>>;
 
     static MapShaderPrograms  m_programs;
     static MapTextures        m_textures;
@@ -38,22 +38,22 @@ public:
     ~ResourceManager() = delete;
 
 
-    static std::shared_ptr<Renderer::ShaderProgram>
+    static std::shared_ptr<RenderEngine::ShaderProgram>
     loadShaders(const std::string& progName,
                 const std::string& vertexPath,
                 const std::string& fragmentPath);
 
-    static std::shared_ptr<Renderer::ShaderProgram>
+    static std::shared_ptr<RenderEngine::ShaderProgram>
     getShaderProgram(const std::string& progName);
 
-    static std::shared_ptr<Renderer::Texture2D>
+    static std::shared_ptr<RenderEngine::Texture2D>
     loadTexture(const std::string& textureName,
                 const std::string& texturePath);
 
-    static std::shared_ptr<Renderer::Texture2D>
+    static std::shared_ptr<RenderEngine::Texture2D>
     getTexture(const std::string& textureName);
 
-    static std::shared_ptr<Renderer::Sprite>
+    static std::shared_ptr<RenderEngine::Sprite>
     createSprite(const std::string& spriteName,
                  const std::string& shaderName,
                  const std::string& textureName,
@@ -61,18 +61,18 @@ public:
                  const unsigned int width,
                  const unsigned int height);
 
-    static std::shared_ptr<Renderer::Sprite>
+    static std::shared_ptr<RenderEngine::Sprite>
     getSprite(const std::string& spriteName);
 
 
-    static std::shared_ptr<Renderer::AnimatedSprite>
+    static std::shared_ptr<RenderEngine::AnimatedSprite>
     createAnimatedSprite(const std::string& spriteName,
                          const std::string& shaderName,
                          const std::string& textureName,
                          const unsigned int width,
                          const unsigned int height);
 
-    static std::shared_ptr<Renderer::AnimatedSprite>
+    static std::shared_ptr<RenderEngine::AnimatedSprite>
     getAnimatedSprite(const std::string& spriteName);
 
 private:

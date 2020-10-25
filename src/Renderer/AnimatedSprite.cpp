@@ -1,7 +1,7 @@
 #include "AnimatedSprite.h"
 #include <iostream>
 
-namespace Renderer
+namespace RenderEngine
 {
 
 AnimatedSprite::AnimatedSprite(std::shared_ptr<ShaderProgram> pShaderProg,

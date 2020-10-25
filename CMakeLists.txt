@@ -20,7 +20,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
 		src/Renderer/IndexBuffer.cpp
          	src/Renderer/VertexArray.h
 		src/Renderer/VertexArray.cpp
-
+         	src/Renderer/Renderer.h
+		src/Renderer/Renderer.cpp
 
 		src/Game/Game.h
 		src/Game/Game.cpp

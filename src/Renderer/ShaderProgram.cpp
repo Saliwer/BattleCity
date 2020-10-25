@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace Renderer{
+namespace RenderEngine{
 
 ShaderProgram::ShaderProgram(const std::string& vertexSource, const std::string& fragmentSource) :
     m_isCompiled(false)

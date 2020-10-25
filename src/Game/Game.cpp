@@ -27,14 +27,14 @@ Game::~Game()
 
 bool Game::init()
 {
-    std::shared_ptr<Renderer::ShaderProgram> tankShaderProgram =
+    std::shared_ptr<RenderEngine::ShaderProgram> tankShaderProgram =
         ResourceManager::loadShaders("TankShaderProgram",
                                      "resource/shaders/vertex.vs",
                                      "resource/shaders/fragment.fs");
     if (!tankShaderProgram)
         return false;
 
-    std::shared_ptr<Renderer::Texture2D> tanksTexture =
+    std::shared_ptr<RenderEngine::Texture2D> tanksTexture =
         ResourceManager::loadTexture("TanksTexture",
                                      "resource/textures/tanks.png");
     if (!tanksTexture)
@@ -56,7 +56,7 @@ bool Game::init()
                                  glm::vec2(0.f, (float)tanksTexture->getHeight()),
                                  glm::vec2(16.f, 16.f));
 
-    std::shared_ptr<Renderer::AnimatedSprite> pTankAnimeSprite =
+    std::shared_ptr<RenderEngine::AnimatedSprite> pTankAnimeSprite =
         ResourceManager::createAnimatedSprite("TankAnimeSprite", "TankShaderProgram", "TanksTexture", 50, 50);
 
     if (!pTankAnimeSprite)

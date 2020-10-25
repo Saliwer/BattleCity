@@ -4,7 +4,7 @@
 
 extern glm::ivec2 g_WindowSize;
 
-Tank::Tank(std::shared_ptr<Renderer::AnimatedSprite> pSprite, const glm::vec2& position, float velocity) :
+Tank::Tank(std::shared_ptr<RenderEngine::AnimatedSprite> pSprite, const glm::vec2& position, float velocity) :
            m_pSprite(std::move(pSprite)), m_position(position),
            m_velocity(velocity, velocity), m_move(false), m_direction(0.f, 1.f)
 {

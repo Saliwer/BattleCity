@@ -1,7 +1,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 
-namespace Renderer
+namespace RenderEngine
 {
 VertexBufferLayout::VertexBufferLayout(unsigned int stride) : m_stride(stride)
 {}

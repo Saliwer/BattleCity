@@ -10,6 +10,7 @@
 // My classes
 #include "Game/Game.h"
 #include "Manager/ResourceManager.h"
+#include "Renderer/Renderer.h"
 
 // Math
 #include <glm/vec2.hpp>
@@ -66,8 +67,8 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
     auto lastTime = std::chrono::high_resolution_clock::now();
-
     // game loop
     //----------
     while (!glfwWindowShouldClose(window))
@@ -90,8 +91,7 @@ int main(int argc, char* argv[])
 
         // render
         //-------
-        glClearColor(0.5f, 0.25f, 0, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        RenderEngine::Renderer::clear(GL_COLOR_BUFFER_BIT);
         g_Game->render();
 
         // Swap front and back buffers
@@ -119,5 +119,5 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
     g_WindowSize.x = width;
     g_WindowSize.y = height;
-    glViewport(0, 0, g_WindowSize.x , g_WindowSize.y);
+    RenderEngine::Renderer::setViewport(width, height);
 }

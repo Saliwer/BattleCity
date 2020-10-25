@@ -4,7 +4,7 @@
 #include <map>
 #include <utility>
 
-namespace Renderer
+namespace RenderEngine
 {
 
 class AnimatedSprite : public Sprite
