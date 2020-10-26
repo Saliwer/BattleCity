@@ -39,8 +39,16 @@ public:
     void addSubTexture(const std::string& name, const glm::vec2& leftBottomUV,
                        const glm::vec2& rightTopUV);
 
-    void genSubTextures(const std::vector<std::string>& names, const glm::vec2& startPosition,
+    void addSubTexture(std::string&& name, glm::vec2&& leftBottomUV,
+                       glm::vec2&& rightTopUV);
+
+    void genSubTextures(const std::vector<std::string>& names, const glm::vec2& leftTop,
                         const glm::vec2& sizeSubTexture);
+
+    void genSubTextures(std::vector<std::string>&& names, glm::vec2&& leftTop,
+                        glm::vec2&& sizeSubTexture);
+
+
 
     const SubTexture& getSubTexture(const std::string& name);
 

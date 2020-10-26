@@ -77,6 +77,15 @@ void Texture2D::addSubTexture(const std::string& name, const glm::vec2& leftBott
         return;
 }
 
+void Texture2D::addSubTexture(std::string&& name, glm::vec2&& leftBottomUV,
+                              glm::vec2&& rightTopUV)
+{
+    auto res = m_subTextures.emplace(std::move(name), SubTexture(leftBottomUV, rightTopUV));
+    if (!res.second)
+        return;
+}
+
+
 const SubTexture& Texture2D::getSubTexture(const std::string& name)
 {
     auto it = m_subTextures.find(name);
@@ -97,6 +106,26 @@ void Texture2D::genSubTextures(const std::vector<std::string>& names, const glm:
         glm::vec2 leftUV(coordX / getWidth(), (coordY - sizeSubTexture.y) / getHeight());
         glm::vec2 rightUV((coordX + sizeSubTexture.x) / getWidth(), coordY / getHeight());
         addSubTexture(subText, leftUV, rightUV);
+        coordX+= sizeSubTexture.x;
+        if (coordX >= getWidth())
+        {
+            coordX = leftTop.x;
+            coordY -= sizeSubTexture.y;
+        }
+    }
+}
+
+void Texture2D::genSubTextures(std::vector<std::string>&& names, glm::vec2&& leftTop,
+                               glm::vec2&& sizeSubTexture)
+{
+    float coordX = leftTop.x;
+    float coordY = leftTop.y;
+
+    for (auto& subText : names)
+    {
+        glm::vec2 leftUV(coordX / getWidth(), (coordY - sizeSubTexture.y) / getHeight());
+        glm::vec2 rightUV((coordX + sizeSubTexture.x) / getWidth(), coordY / getHeight());
+        addSubTexture(std::move(subText), std::move(leftUV), std::move(rightUV));
         coordX+= sizeSubTexture.x;
         if (coordX >= getWidth())
         {

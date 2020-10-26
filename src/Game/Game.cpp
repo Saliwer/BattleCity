@@ -27,61 +27,18 @@ Game::~Game()
 
 bool Game::init()
 {
+    ResourceManager::loadJSONResources("resource/resources.json");
     std::shared_ptr<RenderEngine::ShaderProgram> tankShaderProgram =
-        ResourceManager::loadShaders("TankShaderProgram",
-                                     "resource/shaders/vertex.vs",
-                                     "resource/shaders/fragment.fs");
+        ResourceManager::getShaderProgram("spriteShader");
+
     if (!tankShaderProgram)
         return false;
 
-    std::shared_ptr<RenderEngine::Texture2D> tanksTexture =
-        ResourceManager::loadTexture("TanksTexture",
-                                     "resource/textures/tanks.png");
-    if (!tanksTexture)
-        return false;
-
-
-    std::vector<std::string> subTextures = {
-        "TankUp1",
-        "TankUp2",
-        "TankLeft1",
-        "TankLeft2",
-        "TankDown1",
-        "TankDown2",
-        "TankRight1",
-        "TankRight2"
-    };
-
-    tanksTexture->genSubTextures(subTextures,
-                                 glm::vec2(0.f, (float)tanksTexture->getHeight()),
-                                 glm::vec2(16.f, 16.f));
-
     std::shared_ptr<RenderEngine::AnimatedSprite> pTankAnimeSprite =
-        ResourceManager::createAnimatedSprite("TankAnimeSprite", "TankShaderProgram", "TanksTexture", 50, 50);
+        ResourceManager::getAnimatedSprite("tankYellowType1AnimSprite");
 
     if (!pTankAnimeSprite)
         return false;
-
-    std::list<std::pair<std::string, uint64_t>> tankStatesUp;
-    std::list<std::pair<std::string, uint64_t>> tankStatesLeft;
-    std::list<std::pair<std::string, uint64_t>> tankStatesRight;
-    std::list<std::pair<std::string, uint64_t>> tankStatesDown;
-    tankStatesUp.emplace_back("TankUp1", 1.5e5);
-    tankStatesUp.emplace_back("TankUp2", 1.5e5);
-    tankStatesLeft.emplace_back("TankLeft1", 1.5e5);
-    tankStatesLeft.emplace_back("TankLeft2", 1.5e5);
-    tankStatesDown.emplace_back("TankDown1", 1.5e5);
-    tankStatesDown.emplace_back("TankDown2", 1.5e5);
-    tankStatesRight.emplace_back("TankRight1", 1.5e5);
-    tankStatesRight.emplace_back("TankRight2", 1.5e5);
-
-    pTankAnimeSprite->insertState("tankStatesUp", std::move(tankStatesUp));
-    pTankAnimeSprite->insertState("tankStatesLeft", std::move(tankStatesLeft));
-    pTankAnimeSprite->insertState("tankStatesRight", std::move(tankStatesRight));
-    pTankAnimeSprite->insertState("tankStatesDown", std::move(tankStatesDown));
-
-    pTankAnimeSprite->setState("tankStatesUp");
-
 
     m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(300.f, 250.f), 2.f);
 
@@ -121,22 +78,22 @@ void Game::processInput(uint64_t deltaTime)
 {
     if (m_keys[GLFW_KEY_W]){
         m_pTank->setDirection(glm::vec2(0.f, 1.f));
-        m_pTank->setSpriteState("tankStatesUp");
+        m_pTank->setSpriteState("tankTopState");
         m_pTank->move(true);
     }
     else if (m_keys[GLFW_KEY_D]){
         m_pTank->setDirection(glm::vec2(1.f, 0.f));
-        m_pTank->setSpriteState("tankStatesRight");
+        m_pTank->setSpriteState("tankRightState");
         m_pTank->move(true);
     }
     else if (m_keys[GLFW_KEY_S]){
         m_pTank->setDirection(glm::vec2(0.f, -1.f));
-        m_pTank->setSpriteState("tankStatesDown");
+        m_pTank->setSpriteState("tankBottomState");
         m_pTank->move(true);
     }
     else if(m_keys[GLFW_KEY_A]){
         m_pTank->setDirection(glm::vec2(-1.f, 0.f));
-        m_pTank->setSpriteState("tankStatesLeft");
+        m_pTank->setSpriteState("tankLeftState");
         m_pTank->move(true);
     }
     else

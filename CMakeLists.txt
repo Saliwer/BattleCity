@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME} src/main.cpp
                 src/Manager/stb_image.h)
 
 target_include_directories(${PROJECT_NAME} PRIVATE external/glm)
+target_include_directories(${PROJECT_NAME} PRIVATE external/rapidjson)
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 

@@ -75,6 +75,8 @@ public:
     static std::shared_ptr<RenderEngine::AnimatedSprite>
     getAnimatedSprite(const std::string& spriteName);
 
+    static bool loadJSONResources(const std::string& JSONpath);
+
 private:
     static std::string getFileContent(const std::string& filePath);
 };
