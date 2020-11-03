@@ -28,6 +28,7 @@ ResourceManager::MapShaderPrograms  ResourceManager::m_programs;
 ResourceManager::MapTextures        ResourceManager::m_textures;
 ResourceManager::MapSprites         ResourceManager::m_sprites;
 ResourceManager::MapAnimatedSprites ResourceManager::m_animatedSprites;
+ResourceManager::LevelsArray        ResourceManager::m_levels;
 std::string                         ResourceManager::m_path;
 
 
@@ -157,9 +158,7 @@ std::shared_ptr<RenderEngine::Sprite>
 ResourceManager::createSprite(const std::string& spriteName,
                               const std::string& shaderName,
                               const std::string& textureName,
-                              const std::string& subTextureName,
-                              const unsigned int width,
-                              const unsigned int height)
+                              const std::string& subTextureName)
 {
     std::shared_ptr<RenderEngine::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
     if (!pShaderProgram)
@@ -179,10 +178,8 @@ ResourceManager::createSprite(const std::string& spriteName,
 
     auto res = m_sprites.emplace(spriteName,
                                  std::make_shared<RenderEngine::Sprite>(pShaderProgram,
-                                                                    pTexture,
-                                                                    subTextureName,
-                                                                    glm::vec2(0.f, 0.f),
-                                                                    glm::vec2(width, height)));
+                                                                        pTexture,
+                                                                        subTextureName));
     if (!res.second)
     {
         std::cerr << "ResourceManager: Couldn't insert the new sprite: " << spriteName << std::endl;
@@ -205,9 +202,7 @@ ResourceManager::getSprite(const std::string& spriteName)
 std::shared_ptr<RenderEngine::AnimatedSprite>
 ResourceManager::createAnimatedSprite(const std::string& spriteName,
                                       const std::string& shaderName,
-                                      const std::string& textureName,
-                                      const unsigned int width,
-                                      const unsigned int height)
+                                      const std::string& textureName)
 {
     std::shared_ptr<RenderEngine::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
     if (!pShaderProgram)
@@ -227,8 +222,7 @@ ResourceManager::createAnimatedSprite(const std::string& spriteName,
 
     auto res = m_animatedSprites.emplace(spriteName,
                                          std::make_shared<RenderEngine::AnimatedSprite>
-                                         (pShaderProgram, pTexture,
-                                          glm::vec2(0.f, 0.f), glm::vec2(width, height)));
+                                         (pShaderProgram, pTexture));
     if (!res.second)
     {
         std::cerr << "ResourceManager: Couldn't insert the new animated sprite: " <<
@@ -297,6 +291,23 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
                                 glm::vec2((float)subTextureWidth, (float)subTextureHeight));
     }
 
+    //Parsing sprites
+    assert(JSON_document.HasMember("sprites") && "There is no sprites in *.json file");
+    rapidjson::Document::ConstMemberIterator spritesIt = JSON_document.FindMember("sprites");
+    for (const auto& currentSprite : spritesIt->value.GetArray())
+    {
+        std::string spriteName = currentSprite["name"].GetString();
+        std::string textureAtlas = currentSprite["textureAtlas"].GetString();
+        std::string shaderProgram = currentSprite["shader"].GetString();
+        std::string subTexture = currentSprite["subTextureName"].GetString();
+
+        auto pSprite = createSprite(spriteName, shaderProgram, textureAtlas, subTexture);
+        if (!pSprite){
+            std::cerr << "Couldn't create sprite!\n";
+            continue;
+        }
+    }
+
     //Parsing animated sprites
     assert(JSON_document.HasMember("animatedSprites") && "There is no animated sprites in *.json file");
     rapidjson::Document::ConstMemberIterator animSpritesIt = JSON_document.FindMember("animatedSprites");
@@ -305,12 +316,9 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
         std::string spriteName = currentSprite["name"].GetString();
         std::string shaderProgram = currentSprite["shader"].GetString();
         std::string textureName = currentSprite["textureName"].GetString();
-        unsigned int initialWidth = currentSprite["initialWidth"].GetUint();
-        unsigned int initialHeight = currentSprite["initialHeight"].GetUint();
         std::string initialSubTexture = currentSprite["initialSubTexture"].GetString();
 
-        auto pAnimeSprite = createAnimatedSprite(spriteName, shaderProgram, textureName,
-                                                 initialWidth, initialHeight);
+        auto pAnimeSprite = createAnimatedSprite(spriteName, shaderProgram, textureName);
         if (!pAnimeSprite)
             continue;
 
@@ -331,6 +339,20 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
         pAnimeSprite->setState(initialSubTexture);
     }
 
+    //Parsing levels
+    assert(JSON_document.HasMember("levels") && "There is no levels in *.json file");
+    rapidjson::Document::ConstMemberIterator levelIt = JSON_document.FindMember("levels");
+    for (const auto& currentLevel : levelIt->value.GetArray())
+    {
+        const auto& description = currentLevel["description"].GetArray();
+        std::vector<std::string> levelRows;
+        levelRows.reserve(description.Size());
+        for(const auto& currentRow : description)
+        {
+            levelRows.emplace_back(currentRow.GetString());
+        }
+        m_levels.emplace_back(std::move(levelRows));
+    }
 
     return true;
 }

@@ -18,7 +18,7 @@
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
 
-glm::ivec2 g_WindowSize = glm::ivec2(640, 480);
+glm::ivec2 g_WindowSize = glm::ivec2(13*16, 14*16);
 std::unique_ptr<Game> g_Game = std::make_unique<Game>(g_WindowSize);
 
 int main(int argc, char* argv[])
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 
     // clean-up before exit
     //---------------------
-    g_Game->terminate();
+    g_Game = nullptr;
     ResourceManager::unloadResources();
     glfwTerminate();
     return 0;

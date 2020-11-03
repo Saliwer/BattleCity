@@ -5,21 +5,17 @@
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 namespace RenderEngine
 {
 
 Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                std::shared_ptr<Texture2D> pTexture,
-               const std::string& subTextureName,
-               const glm::vec2& position,
-               const glm::vec2& size,
-               float rotation)
+               const std::string& subTextureName)
                : m_pShaderProg(std::move(pShaderProg)),
                  m_pTexture(std::move(pTexture)),
-                 m_subTextureName(subTextureName),
-                 m_position(position), m_size(size),
-                 m_rotation(rotation)
+                 m_subTextureName(subTextureName)
 {
 
     const SubTexture& subTexture = m_pTexture->getSubTexture(m_subTextureName);
@@ -75,16 +71,15 @@ Sprite::~Sprite()
 
 }
 
-void Sprite::render()
+void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction)
 {
     m_pShaderProg->use();
     glm::mat4 modelMatrix = glm::mat4(1.f);
 
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(m_position, 0.f));
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f * m_size.x, 0.5f * m_size.y, 0.f));
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation), glm::vec3(0.f, 0.f, 1.f));
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f * m_size.x, -0.5f * m_size.y, 0.f));
-    modelMatrix = glm::scale(modelMatrix, glm::vec3(m_size, 1.f));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(position, 0.f));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.f));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(size, 1.f));
 
     m_vertexArray.bind();
     glActiveTexture(GL_TEXTURE0);

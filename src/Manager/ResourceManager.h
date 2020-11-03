@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include <vector>
 #include <memory>
 
 namespace RenderEngine
@@ -15,15 +16,17 @@ namespace RenderEngine
 
 class ResourceManager
 {
-    using MapShaderPrograms = std::map<std::string, std::shared_ptr<RenderEngine::ShaderProgram>>;
-    using MapTextures = std::map<std::string, std::shared_ptr<RenderEngine::Texture2D>>;
-    using MapSprites = std::map<std::string, std::shared_ptr<RenderEngine::Sprite>>;
-    using MapAnimatedSprites = std::map<std::string, std::shared_ptr<RenderEngine::AnimatedSprite>>;
+    using MapShaderPrograms     = std::map<std::string, std::shared_ptr<RenderEngine::ShaderProgram>>;
+    using MapTextures           = std::map<std::string, std::shared_ptr<RenderEngine::Texture2D>>;
+    using MapSprites            = std::map<std::string, std::shared_ptr<RenderEngine::Sprite>>;
+    using MapAnimatedSprites    = std::map<std::string, std::shared_ptr<RenderEngine::AnimatedSprite>>;
+    using LevelsArray           = std::vector<std::vector<std::string>>;
 
     static MapShaderPrograms  m_programs;
     static MapTextures        m_textures;
     static MapSprites         m_sprites;
     static MapAnimatedSprites m_animatedSprites;
+    static LevelsArray        m_levels;
     static std::string        m_path;
 
 public:
@@ -57,9 +60,7 @@ public:
     createSprite(const std::string& spriteName,
                  const std::string& shaderName,
                  const std::string& textureName,
-                 const std::string& subTextureName,
-                 const unsigned int width,
-                 const unsigned int height);
+                 const std::string& subTextureName);
 
     static std::shared_ptr<RenderEngine::Sprite>
     getSprite(const std::string& spriteName);
@@ -68,14 +69,14 @@ public:
     static std::shared_ptr<RenderEngine::AnimatedSprite>
     createAnimatedSprite(const std::string& spriteName,
                          const std::string& shaderName,
-                         const std::string& textureName,
-                         const unsigned int width,
-                         const unsigned int height);
+                         const std::string& textureName);
 
     static std::shared_ptr<RenderEngine::AnimatedSprite>
     getAnimatedSprite(const std::string& spriteName);
 
     static bool loadJSONResources(const std::string& JSONpath);
+
+    static const LevelsArray& getLevels() { return m_levels; }
 
 private:
     static std::string getFileContent(const std::string& filePath);

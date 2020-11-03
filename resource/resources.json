@@ -69,13 +69,122 @@
          }
     ],
 
+    "sprites" : [
+        {
+            "name"              : "fullBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "fullBrick"
+        },
+        {
+            "name"              : "topBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topBrick"
+        },
+        {
+            "name"              : "bottomBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomBrick"
+        },
+        {
+            "name"              : "leftBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "leftBrick"
+        },
+        {
+            "name"              : "rightBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "rightBrick"
+        },
+        {
+            "name"              : "topLeftBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topLeftBrick"
+        },
+        {
+            "name"              : "topRightBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topRightBrick"
+        },
+        {
+            "name"              : "bottomLeftBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomLeftBrick"
+        },
+        {
+            "name"              : "bottomRightBrick",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomRightBrick"
+        },
+        {
+            "name"              : "fullConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "fullConcrete"
+        },
+        {
+            "name"              : "topConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topConcrete"
+        },
+        {
+            "name"              : "bottomConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomConcrete"
+        },
+        {
+            "name"              : "rightConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "rightConcrete"
+        },
+        {
+            "name"              : "leftConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "leftConcrete"
+        },
+        {
+            "name"              : "topLeftConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topLeftConcrete"
+        },
+        {
+            "name"              : "topRightConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "topRightConcrete"
+        },
+        {
+            "name"              : "bottomLeftConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomLeftConcrete"
+        },
+        {
+            "name"              : "bottomRightConcrete",
+            "textureAtlas"      : "mapTexture",
+            "shader"            : "spriteShader",
+            "subTextureName"    : "bottomRightConcrete"
+        }
+    ],
+
     "animatedSprites" : [
         {
             "name"                  : "tankYellowType1AnimSprite",
             "shader"                : "spriteShader",
             "textureName"           : "tanksTexture",
-            "initialWidth"          : 50,
-            "initialHeight"         : 50,
             "initialSubTexture"     : "tankTopState",
             "spriteStates" : [
                 {
@@ -135,5 +244,28 @@
                 }
             ]
         }
+    ],
+
+    "levels" : [
+        {
+            "description" : [
+                "DDDDDDDDDDDDD",
+                "D1D1D1D1D1D1D",
+                "D4D4D4D4D4D4D",
+                "D4D4D4D4D4D4D",
+                "D4D4D494D4D4D",
+                "D4D4D3D3D4D4D",
+                "D3D3D1D1D3D3D",
+                "1D11D3D3D11D1",
+                "8D33D1D1D33D8",
+                "D1D1D444D1D1D",
+                "D4D4D4D4D4D4D",
+                "D4D4D3D3D4D4D",
+                "D4D4DH1GD4D4D",
+                "DDDDD0E2DDDDD"
+            ]
+        }
     ]
+
+
 }

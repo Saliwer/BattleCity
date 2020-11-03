@@ -10,25 +10,32 @@ add_executable(${PROJECT_NAME} src/main.cpp
                 src/Renderer/ShaderProgram.h
                 src/Renderer/Texture2D.h
                 src/Renderer/Texture2D.cpp
-		src/Renderer/Sprite.h
-		src/Renderer/Sprite.cpp
-         	src/Renderer/AnimatedSprite.h
-		src/Renderer/AnimatedSprite.cpp
-         	src/Renderer/VertexBuffer.h
-		src/Renderer/VertexBuffer.cpp
-         	src/Renderer/IndexBuffer.h
-		src/Renderer/IndexBuffer.cpp
-         	src/Renderer/VertexArray.h
-		src/Renderer/VertexArray.cpp
-         	src/Renderer/Renderer.h
-		src/Renderer/Renderer.cpp
+                src/Renderer/Sprite.h
+                src/Renderer/Sprite.cpp
+                src/Renderer/AnimatedSprite.h
+                src/Renderer/AnimatedSprite.cpp
+                src/Renderer/VertexBuffer.h
+                src/Renderer/VertexBuffer.cpp
+                src/Renderer/IndexBuffer.h
+                src/Renderer/IndexBuffer.cpp
+                src/Renderer/VertexArray.h
+                src/Renderer/VertexArray.cpp
+                src/Renderer/Renderer.h
+                src/Renderer/Renderer.cpp
 
-		src/Game/Game.h
-		src/Game/Game.cpp
-		src/Game/Tank.h
-		src/Game/Tank.cpp
+                src/Game/Game.h
+                src/Game/Game.cpp
+                src/Game/Level.h
+                src/Game/Level.cpp
 
-		src/Manager/ResourceManager.h
+                src/Game/GameObjects/Tank.h
+                src/Game/GameObjects/Tank.cpp
+                src/Game/GameObjects/IGameObject.h
+                src/Game/GameObjects/IGameObject.cpp
+                src/Game/GameObjects/BrickWall.h
+                src/Game/GameObjects/BrickWall.cpp
+
+                src/Manager/ResourceManager.h
                 src/Manager/ResourceManager.cpp
                 src/Manager/stb_image.h)
 

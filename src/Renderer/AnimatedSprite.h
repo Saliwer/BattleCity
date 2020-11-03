@@ -18,10 +18,7 @@ class AnimatedSprite : public Sprite
     uint64_t                     m_currentSpriteDuration;
 public:
     AnimatedSprite(std::shared_ptr<ShaderProgram> pShaderProg,
-                   std::shared_ptr<Texture2D> pTexture,
-                   const glm::vec2& position = glm::vec2(0.f),
-                   const glm::vec2& size = glm::vec2(1.f),
-                   float rotation = 0.f);
+                   std::shared_ptr<Texture2D> pTexture);
 
     virtual ~AnimatedSprite();
 
@@ -38,7 +35,7 @@ public:
     void setState(const std::string& newState);
 
     void update(uint64_t delta);
-    virtual void render() override;
+    virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) override;
 
 };
 

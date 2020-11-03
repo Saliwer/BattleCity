@@ -8,7 +8,8 @@
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
-#include "Tank.h"
+#include "GameObjects/Tank.h"
+#include "Level.h"
 
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
@@ -40,8 +41,8 @@ bool Game::init()
     if (!pTankAnimeSprite)
         return false;
 
-    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(300.f, 250.f), 2.f);
-
+    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(0.f, 0.f), glm::vec2(16.f, 16.f), glm::vec2(0.f, 1.f), 0.8f);
+    m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[0]);
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
                                             0.0f, (float)m_windowSize.y,
@@ -56,22 +57,21 @@ bool Game::init()
     return true;
 }
 
-void Game::terminate()
-{
-    Tank* p = m_pTank.release();
-    delete p;
-}
-
 void Game::render()
 {
     if (m_pTank)
         m_pTank->render();
+    if (m_pLevel)
+        m_pLevel->render();
+
 }
 
 void Game::update(uint64_t deltaTime)
 {
     if (m_pTank)
         m_pTank->update(deltaTime);
+    if (m_pLevel)
+        m_pLevel->update(deltaTime);
 }
 
 void Game::processInput(uint64_t deltaTime)
