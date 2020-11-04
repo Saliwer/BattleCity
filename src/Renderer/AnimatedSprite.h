@@ -16,6 +16,7 @@ class AnimatedSprite : public Sprite
     ListTextures::const_iterator m_activeSubTexture;
     HashStates::const_iterator   m_activeState;
     uint64_t                     m_currentSpriteDuration;
+    bool                         m_isChanged;
 public:
     AnimatedSprite(std::shared_ptr<ShaderProgram> pShaderProg,
                    std::shared_ptr<Texture2D> pTexture);

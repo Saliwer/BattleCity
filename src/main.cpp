@@ -119,5 +119,21 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
     g_WindowSize.x = width;
     g_WindowSize.y = height;
-    RenderEngine::Renderer::setViewport(width, height);
+    const float aspect_ratio = 13.f / 14.f;
+    unsigned int viewPortWidth = width;
+    unsigned int viewPortHeight = height;
+    unsigned int viewPortXOffset = 0;
+    unsigned int viewPortYOffset = 0;
+
+    if (((float)width / height) > aspect_ratio)
+    {
+        viewPortWidth = static_cast<unsigned int>(viewPortHeight * aspect_ratio);
+        viewPortXOffset = (width - viewPortHeight) / 2;
+    }
+    else
+    {
+        viewPortHeight = static_cast<unsigned int>(viewPortWidth / aspect_ratio);
+        viewPortYOffset = (height - viewPortHeight) / 2;
+    }
+    RenderEngine::Renderer::setViewport(viewPortWidth, viewPortHeight, viewPortXOffset, viewPortYOffset);
 }

@@ -6,7 +6,7 @@ namespace RenderEngine
 
 AnimatedSprite::AnimatedSprite(std::shared_ptr<ShaderProgram> pShaderProg,
                                std::shared_ptr<Texture2D> pTexture) : Sprite(pShaderProg, pTexture, ""),
-                               m_currentSpriteDuration(0)
+                               m_currentSpriteDuration(0), m_isChanged(false)
 {
     m_activeState = m_states.end();
 }
@@ -51,6 +51,7 @@ void AnimatedSprite::update(uint64_t delta)
         if(++m_activeSubTexture == m_activeState->second.cend())
             m_activeSubTexture = m_activeState->second.cbegin();
         m_currentSpriteDuration = 0;
+        m_isChanged = true;
     }
 }
 
@@ -59,11 +60,11 @@ void AnimatedSprite::render(const glm::vec2& position, const glm::vec2& size, co
 {
     if (m_activeState == m_states.end())
         return;
-    if((m_currentSpriteDuration == 0) && (m_activeState->second.size() != 0))
+    if(m_isChanged)
     {
       //current frame was changed
-    //  std::cout << "Change sprite to '" << m_activeSubTexture->first << "'\n";
       setSubTexture(m_activeSubTexture->first);
+      m_isChanged = false;
     }
     Sprite::render(position, size, direction);
 }

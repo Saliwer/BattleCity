@@ -103,8 +103,10 @@ void Texture2D::genSubTextures(const std::vector<std::string>& names, const glm:
 
     for (const auto& subText : names)
     {
-        glm::vec2 leftUV(coordX / getWidth(), (coordY - sizeSubTexture.y) / getHeight());
-        glm::vec2 rightUV((coordX + sizeSubTexture.x) / getWidth(), coordY / getHeight());
+        glm::vec2 leftUV(static_cast<float>((coordX + 0.0005f) / getWidth()),
+                         static_cast<float>((coordY + 0.0005f - sizeSubTexture.y) / getHeight()));
+        glm::vec2 rightUV(static_cast<float>((coordX - 0.0005f + sizeSubTexture.x) / getWidth()),
+                          static_cast<float>((coordY - 0.0005f) / getHeight()));
         addSubTexture(subText, leftUV, rightUV);
         coordX+= sizeSubTexture.x;
         if (coordX >= getWidth())
@@ -123,8 +125,10 @@ void Texture2D::genSubTextures(std::vector<std::string>&& names, glm::vec2&& lef
 
     for (auto& subText : names)
     {
-        glm::vec2 leftUV(coordX / getWidth(), (coordY - sizeSubTexture.y) / getHeight());
-        glm::vec2 rightUV((coordX + sizeSubTexture.x) / getWidth(), coordY / getHeight());
+        glm::vec2 leftUV(static_cast<float>((coordX + 0.0005f) / getWidth()),
+                         static_cast<float>((coordY + 0.0005f - sizeSubTexture.y) / getHeight()));
+        glm::vec2 rightUV(static_cast<float>((coordX - 0.0005f + sizeSubTexture.x) / getWidth()),
+                          static_cast<float>((coordY - 0.0005f) / getHeight()));
         addSubTexture(std::move(subText), std::move(leftUV), std::move(rightUV));
         coordX+= sizeSubTexture.x;
         if (coordX >= getWidth())

@@ -47,7 +47,7 @@ bool Game::init()
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
                                             0.0f, (float)m_windowSize.y,
                                             100.0f, -100.0f);
-
+    //projectionMatrix[0] = projectionMatrix[0] / (m_windowSize.x / (float)m_windowSize.y);
 
     tankShaderProgram->use();
     tankShaderProgram->setUniform("projectionMatrix", projectionMatrix);
