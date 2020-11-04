@@ -17,8 +17,7 @@ class Tank : public IGameObject
     glm::vec2 m_velocity;
     bool m_move;
 public:
-    Tank(std::shared_ptr<RenderEngine::AnimatedSprite> pSprite,
-         const glm::vec2& position, const glm::vec2& size,
+    Tank(const glm::vec2& position, const glm::vec2& size,
          const glm::vec2& direction, float velocity);
 
     virtual void render() const override;

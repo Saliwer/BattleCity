@@ -35,13 +35,7 @@ bool Game::init()
     if (!tankShaderProgram)
         return false;
 
-    std::shared_ptr<RenderEngine::AnimatedSprite> pTankAnimeSprite =
-        ResourceManager::getAnimatedSprite("tankYellowType1AnimSprite");
-
-    if (!pTankAnimeSprite)
-        return false;
-
-    m_pTank = std::make_unique<Tank>(pTankAnimeSprite, glm::vec2(0.f, 0.f), glm::vec2(16.f, 16.f), glm::vec2(0.f, 1.f), 0.8f);
+    m_pTank = std::make_unique<Tank>(glm::vec2(0.f, 0.f), glm::vec2(16.f, 16.f), glm::vec2(0.f, 1.f), 0.8f);
     m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[0]);
 
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,

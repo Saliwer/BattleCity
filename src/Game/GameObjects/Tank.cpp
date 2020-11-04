@@ -3,15 +3,15 @@
 #include "../../Renderer/AnimatedSprite.h"
 
 #include <iostream>
-#include <glm/gtx/vector_angle.hpp>
+#include "../../Manager/ResourceManager.h"
 
 extern glm::ivec2 g_WindowSize;
 
-Tank::Tank(std::shared_ptr<RenderEngine::AnimatedSprite> pSprite,
-           const glm::vec2& position, const glm::vec2& size,
+Tank::Tank(const glm::vec2& position, const glm::vec2& size,
            const glm::vec2& direction, float velocity) :
            IGameObject(position, size, glm::normalize(direction)),
-           m_pSprite(std::move(pSprite)), m_velocity(velocity, velocity), m_move(false)
+           m_pSprite(ResourceManager::getAnimatedSprite("tankYellowType1AnimSprite")),
+           m_velocity(velocity, velocity), m_move(false)
 {
 }
 
