@@ -61,11 +61,13 @@ public:
               const glm::vec2& direction);
     virtual ~BrickWall();
     virtual void render() const override;
-    virtual void update(uint64_t delta) override;
+    virtual void update(uint64_t delta) override {}
 
 private:
-    std::array<EBrickWallState, 4> m_eCurrentBrickStates;
-    std::array<std::shared_ptr<RenderEngine::Sprite>, 15> m_pSprites;
-
     void renderBrick(EBrickLocation eLocation) const;
+
+private:
+    std::array<EBrickWallState, 4>                          m_eCurrentBrickStates;
+    std::array<std::shared_ptr<RenderEngine::Sprite>, 15>   m_pSprites;
+    std::array<glm::vec2, 4>                                m_blockOffsets;
 };

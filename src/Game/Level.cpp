@@ -1,6 +1,7 @@
 #include "Level.h"
 
 #include "GameObjects/BrickWall.h"
+#include "GameObjects/BetonWall.h"
 
 #include <iostream>
 
@@ -43,6 +44,21 @@ createGameObjectFromChar(const char description,
         break;
     case 'D':
         return nullptr;
+        break;
+    case '5':
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Right, position, size, direction);
+        break;
+    case '6':
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Bottom, position, size, direction);
+        break;
+    case '7':
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Left, position, size, direction);
+        break;
+    case '8':
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Top, position, size, direction);
+        break;
+    case '9':
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallType::All, position, size, direction);
         break;
     default:
         std::cerr << "Unknown char description '" << description <<

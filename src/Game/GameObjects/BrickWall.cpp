@@ -3,10 +3,18 @@
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
 
+
 BrickWall::BrickWall(EBrickWallType brickWallType,
                      const glm::vec2& position, const glm::vec2& size,
                      const glm::vec2& direction) : IGameObject(position, size, direction)
 {
+    m_blockOffsets = {
+        glm::vec2(0.f, m_size.y / 2.f),
+        glm::vec2(m_size.x / 2.f, m_size.y / 2.f),
+        glm::vec2(0.f, 0.f),
+        glm::vec2(m_size.x / 2.f, 0.f)
+    };
+
     m_pSprites[static_cast<size_t>(EBrickWallState::fullBrick)]                 = ResourceManager::getSprite("fullBrick8x8");
     m_pSprites[static_cast<size_t>(EBrickWallState::topLeftBrick)]              = ResourceManager::getSprite("topLeftBrick8x8");
     m_pSprites[static_cast<size_t>(EBrickWallState::topRightBrick)]             = ResourceManager::getSprite("topRightBrick8x8");
@@ -65,17 +73,10 @@ BrickWall::~BrickWall()
 
 void BrickWall::renderBrick(EBrickLocation eLocation) const
 {
-    static std::array<glm::vec2, 4> offsets = {
-        glm::vec2(0.f, m_size.y / 2.f),
-        glm::vec2(m_size.x / 2.f, m_size.y / 2.f),
-        glm::vec2(0.f, 0.f),
-        glm::vec2(m_size.x / 2.f, 0.f)
-    };
-
     EBrickWallState state = m_eCurrentBrickStates[static_cast<size_t>(eLocation)];
     if (state != EBrickWallState::destroyed)
     {
-        m_pSprites[static_cast<size_t>(state)]->render(m_position + offsets[static_cast<size_t>(eLocation)], m_size / 2.f, m_direction);
+        m_pSprites[static_cast<size_t>(state)]->render(m_position + m_blockOffsets[static_cast<size_t>(eLocation)], m_size / 2.f, m_direction);
     }
 }
 
@@ -87,7 +88,3 @@ void BrickWall::render() const
     renderBrick(EBrickLocation::BottomRight);
 }
 
-void BrickWall::update(uint64_t delta)
-{
-
-}

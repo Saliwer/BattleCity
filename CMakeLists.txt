@@ -34,6 +34,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
                 src/Game/GameObjects/IGameObject.cpp
                 src/Game/GameObjects/BrickWall.h
                 src/Game/GameObjects/BrickWall.cpp
+                src/Game/GameObjects/BetonWall.h
+                src/Game/GameObjects/BetonWall.cpp
 
                 src/Manager/ResourceManager.h
                 src/Manager/ResourceManager.cpp
