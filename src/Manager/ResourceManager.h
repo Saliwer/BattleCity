@@ -5,13 +5,14 @@
 #include <vector>
 #include <memory>
 
+#include "../Renderer/AnimatedSprite.h"
+
+
 namespace RenderEngine
 {
     class ShaderProgram;
     class Texture2D;
     class Sprite;
-    class AnimatedSprite;
-
 }
 
 class ResourceManager
@@ -69,7 +70,9 @@ public:
     static std::shared_ptr<RenderEngine::AnimatedSprite>
     createAnimatedSprite(const std::string& spriteName,
                          const std::string& shaderName,
-                         const std::string& textureName);
+                         const std::string& textureName,
+                         const std::string& subTextureName,
+                         const std::vector<RenderEngine::AnimatedSprite::Frame>& frames = {});
 
     static std::shared_ptr<RenderEngine::AnimatedSprite>
     getAnimatedSprite(const std::string& spriteName);

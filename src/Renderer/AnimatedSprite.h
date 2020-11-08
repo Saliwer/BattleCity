@@ -9,35 +9,35 @@ namespace RenderEngine
 
 class AnimatedSprite : public Sprite
 {
-    using ListTextures = std::list<std::pair<std::string, uint64_t>>;
-    using HashStates = std::map<std::string, ListTextures>;
-
-    HashStates                   m_states;
-    ListTextures::const_iterator m_activeSubTexture;
-    HashStates::const_iterator   m_activeState;
-    uint64_t                     m_currentSpriteDuration;
-    bool                         m_isChanged;
 public:
+
+    struct Frame
+    {
+        Frame(std::string name, uint64_t duration)
+        : m_subTextureName(std::move(name))
+        , m_currentFrameDuration(duration)
+        {}
+        ~Frame() = default;
+
+        std::string m_subTextureName;
+        uint64_t    m_currentFrameDuration;
+    };
+
     AnimatedSprite(std::shared_ptr<ShaderProgram> pShaderProg,
-                   std::shared_ptr<Texture2D> pTexture);
+                   std::shared_ptr<Texture2D> pTexture,
+                   std::string subTextureName,
+                   std::vector<Frame> = {});
 
     virtual ~AnimatedSprite();
 
-    /*
-    template <typename Name, typename List>
-    void insertState(Name&& name, List&& subTextures)
-    {
-        m_states.emplace(std::forward<Name>(name), std::forward<List>(subTextures));
-    }
-    */
-    void insertState(std::string name, ListTextures subTextures);
-
-    const std::string& getActiveState() const { return m_activeState->first; }
-    void setState(const std::string& newState);
-
     void update(uint64_t delta);
-    virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) override;
+    void addFrame(std::string name, uint64_t duration);
+    virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const override;
 
+protected:
+    std::vector<Frame>  m_frames;
+    size_t              m_activeFrame;
+    uint64_t            m_currentAnimationTime;
 };
 
 }

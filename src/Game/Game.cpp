@@ -72,22 +72,18 @@ void Game::processInput(uint64_t deltaTime)
 {
     if (m_keys[GLFW_KEY_W]){
         m_pTank->setDirection(glm::vec2(0.f, 1.f));
-        m_pTank->setSpriteState("tankTopState");
         m_pTank->move(true);
     }
     else if (m_keys[GLFW_KEY_D]){
         m_pTank->setDirection(glm::vec2(1.f, 0.f));
-        m_pTank->setSpriteState("tankRightState");
         m_pTank->move(true);
     }
     else if (m_keys[GLFW_KEY_S]){
         m_pTank->setDirection(glm::vec2(0.f, -1.f));
-        m_pTank->setSpriteState("tankBottomState");
         m_pTank->move(true);
     }
     else if(m_keys[GLFW_KEY_A]){
         m_pTank->setDirection(glm::vec2(-1.f, 0.f));
-        m_pTank->setSpriteState("tankLeftState");
         m_pTank->move(true);
     }
     else

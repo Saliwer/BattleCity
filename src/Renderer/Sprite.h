@@ -8,6 +8,7 @@
 #include <glad/glad.h>
 #include <memory>
 #include <glm/vec2.hpp>
+#include <vector>
 
 namespace RenderEngine
 {
@@ -17,19 +18,10 @@ namespace RenderEngine
 
     class Sprite
     {
-    protected:
-        std::shared_ptr<ShaderProgram>  m_pShaderProg;
-        std::shared_ptr<Texture2D>      m_pTexture;
-        std::string                     m_subTextureName;
-        VertexBuffer                    m_vertexCoords;
-        VertexBuffer                    m_textureCoords;
-        IndexBuffer                     m_indices;
-        VertexArray                     m_vertexArray;
-
     public:
         Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                std::shared_ptr<Texture2D> pTexture,
-               const std::string& subTextureName);
+               std::string subTextureName);
         virtual ~Sprite();
 
         Sprite() = delete;
@@ -39,10 +31,19 @@ namespace RenderEngine
         Sprite&& operator=(Sprite&&) = delete;
 
 
-        virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction);
+        virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const;
+        virtual void update(uint64_t delta){}
         void setSubTexture(const std::string& name);
 
     protected:
         void changeTextureCoord(const SubTexture& newCoords);
+
+        std::shared_ptr<ShaderProgram>  m_pShaderProg;
+        std::shared_ptr<Texture2D>      m_pTexture;
+        std::string                     m_activeSubTexture;
+        VertexBuffer                    m_vertexCoords;
+        VertexBuffer                    m_textureCoords;
+        IndexBuffer                     m_indices;
+        VertexArray                     m_vertexArray;
     };
 }

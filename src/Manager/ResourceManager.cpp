@@ -202,7 +202,9 @@ ResourceManager::getSprite(const std::string& spriteName)
 std::shared_ptr<RenderEngine::AnimatedSprite>
 ResourceManager::createAnimatedSprite(const std::string& spriteName,
                                       const std::string& shaderName,
-                                      const std::string& textureName)
+                                      const std::string& textureName,
+                                      const std::string& subTextureName,
+                                      const std::vector<RenderEngine::AnimatedSprite::Frame>& frames)
 {
     std::shared_ptr<RenderEngine::ShaderProgram> pShaderProgram = getShaderProgram(shaderName);
     if (!pShaderProgram)
@@ -222,7 +224,7 @@ ResourceManager::createAnimatedSprite(const std::string& spriteName,
 
     auto res = m_animatedSprites.emplace(spriteName,
                                          std::make_shared<RenderEngine::AnimatedSprite>
-                                         (pShaderProgram, pTexture));
+                                         (pShaderProgram, pTexture, subTextureName, frames));
     if (!res.second)
     {
         std::cerr << "ResourceManager: Couldn't insert the new animated sprite: " <<
@@ -299,44 +301,33 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
         std::string spriteName = currentSprite["name"].GetString();
         std::string textureAtlas = currentSprite["textureAtlas"].GetString();
         std::string shaderProgram = currentSprite["shader"].GetString();
-        std::string subTexture = currentSprite["subTextureName"].GetString();
+        std::string subTexture = currentSprite["initialSubTexture"].GetString();
 
-        auto pSprite = createSprite(spriteName, shaderProgram, textureAtlas, subTexture);
-        if (!pSprite){
-            std::cerr << "Couldn't create sprite!\n";
-            continue;
-        }
-    }
-
-    //Parsing animated sprites
-    assert(JSON_document.HasMember("animatedSprites") && "There is no animated sprites in *.json file");
-    rapidjson::Document::ConstMemberIterator animSpritesIt = JSON_document.FindMember("animatedSprites");
-    for(const auto& currentSprite : animSpritesIt->value.GetArray())
-    {
-        std::string spriteName = currentSprite["name"].GetString();
-        std::string shaderProgram = currentSprite["shader"].GetString();
-        std::string textureName = currentSprite["textureName"].GetString();
-        std::string initialSubTexture = currentSprite["initialSubTexture"].GetString();
-
-        auto pAnimeSprite = createAnimatedSprite(spriteName, shaderProgram, textureName);
-        if (!pAnimeSprite)
-            continue;
-
-        const auto& statesArray = currentSprite["spriteStates"].GetArray();
-        for (const auto& currentState : statesArray)
+        //if there is "frames" field - animated sprite
+        auto framesIt = currentSprite.FindMember("frames");
+        if (framesIt != currentSprite.MemberEnd())
         {
-            std::string stateName = currentState["spriteState"].GetString();
-            std::list<std::pair<std::string, uint64_t>> framesList;
-            const auto& framesArray = currentState["frames"].GetArray();
+            auto pAnimetedSprite = createAnimatedSprite(spriteName, shaderProgram, textureAtlas, subTexture);
+            if (!pAnimetedSprite){
+                std::cerr << "Couldn't create animated sprite!\n";
+                continue;
+            }
+            const auto& framesArray = currentSprite["frames"].GetArray();
             for(const auto& frame : framesArray)
             {
                 std::string subTexture = frame["subTexture"].GetString();
                 uint64_t duration = frame["duration"].GetUint64();
-                framesList.emplace_back(std::move(subTexture), duration);
+                pAnimetedSprite->addFrame(subTexture, duration);
             }
-            pAnimeSprite->insertState(std::move(stateName), std::move(framesList));
         }
-        pAnimeSprite->setState(initialSubTexture);
+        else // otherwise - just sprite
+        {
+            auto pSprite = createSprite(spriteName, shaderProgram, textureAtlas, subTexture);
+            if (!pSprite){
+                std::cerr << "Couldn't create sprite!\n";
+                continue;
+            }
+        }
     }
 
     //Parsing levels

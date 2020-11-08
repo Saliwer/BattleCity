@@ -13,16 +13,12 @@ namespace RenderEngine
 
 class Tank : public IGameObject
 {
-    std::shared_ptr<RenderEngine::AnimatedSprite> m_pSprite;
-    glm::vec2 m_velocity;
-    bool m_move;
 public:
     Tank(const glm::vec2& position, const glm::vec2& size,
          const glm::vec2& direction, float velocity);
 
     virtual void render() const override;
     virtual void update(uint64_t deltaTime) override;
-    void setSpriteState(const std::string& state);
 
     void move(bool move) { m_move = move; }
     void setPosition(const glm::vec2& position) { m_position = position; }
@@ -34,4 +30,9 @@ public:
     const glm::vec2& getSize() const {return m_size; }
     const glm::vec2& getPosition() const { return m_position; }
     const glm::vec2& getDirection() const { return m_direction; }
+
+private:
+    std::shared_ptr<RenderEngine::AnimatedSprite> m_pMoveSprite;
+    glm::vec2 m_velocity;
+    bool m_move;
 };

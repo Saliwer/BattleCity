@@ -12,13 +12,12 @@ namespace RenderEngine
 
 Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
                std::shared_ptr<Texture2D> pTexture,
-               const std::string& subTextureName)
-               : m_pShaderProg(std::move(pShaderProg)),
-                 m_pTexture(std::move(pTexture)),
-                 m_subTextureName(subTextureName)
+               std::string subTextureName)
+               : m_pShaderProg(std::move(pShaderProg))
+               , m_pTexture(std::move(pTexture))
+               , m_activeSubTexture(std::move(subTextureName))
 {
-
-    const SubTexture& subTexture = m_pTexture->getSubTexture(m_subTextureName);
+    const SubTexture& subTexture = m_pTexture->getSubTexture(m_activeSubTexture);
 
     GLfloat vertexData[] =
     {
@@ -68,16 +67,16 @@ Sprite::Sprite(std::shared_ptr<ShaderProgram> pShaderProg,
 
 Sprite::~Sprite()
 {
-
 }
 
-void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction)
+void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const
 {
     m_pShaderProg->use();
     glm::mat4 modelMatrix = glm::mat4(1.f);
 
     modelMatrix = glm::translate(modelMatrix, glm::vec3(position, 0.f));
     modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.f));
+    modelMatrix = glm::rotate(modelMatrix, glm::orientedAngle(glm::vec2(1.f, 0.f), direction), glm::vec3(0.f, 0.f, 1.f));
     modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(size, 1.f));
 
@@ -93,8 +92,8 @@ void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm:
 
 void Sprite::setSubTexture(const std::string& name)
 {
-    m_subTextureName = name;
-    changeTextureCoord(m_pTexture->getSubTexture(m_subTextureName));
+    m_activeSubTexture = name;
+    changeTextureCoord(m_pTexture->getSubTexture(m_activeSubTexture));
 }
 
 void Sprite::changeTextureCoord(const SubTexture& newCoords)
