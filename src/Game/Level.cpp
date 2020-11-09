@@ -2,6 +2,10 @@
 
 #include "GameObjects/BrickWall.h"
 #include "GameObjects/BetonWall.h"
+#include "GameObjects/Tree.h"
+#include "GameObjects/Ice.h"
+#include "GameObjects/Water.h"
+#include "GameObjects/Eagle.h"
 
 #include <iostream>
 
@@ -17,49 +21,42 @@ createGameObjectFromChar(const char description,
     switch (description) {
     case '0':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::Right, position, size, direction);
-        break;
     case '1':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::Bottom, position, size, direction);
-        break;
     case '2':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::Left, position, size, direction);
-        break;
     case '3':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::Top, position, size, direction);
-        break;
     case '4':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::All, position, size, direction);
-        break;
     case 'G':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::BottomLeft, position, size, direction);
-        break;
     case 'H':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::BottomRight, position, size, direction);
-        break;
     case 'I':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::TopLeft, position, size, direction);
-        break;
     case 'J':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::TopRight, position, size, direction);
-        break;
     case 'D':
         return nullptr;
-        break;
     case '5':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Right, position, size, direction);
-        break;
     case '6':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Bottom, position, size, direction);
-        break;
     case '7':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Left, position, size, direction);
-        break;
     case '8':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Top, position, size, direction);
-        break;
     case '9':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::All, position, size, direction);
-        break;
+    case 'A':
+        return std::make_shared<Water>(position, size, direction);
+    case 'B':
+        return std::make_shared<Tree>(position, size, direction);
+    case 'C':
+        return std::make_shared<Ice>(position, size, direction);
+    case 'E':
+        return std::make_shared<Eagle>(true, position, size, direction);
     default:
         std::cerr << "Unknown char description '" << description <<
                      "'.\n";
