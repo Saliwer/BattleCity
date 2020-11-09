@@ -38,11 +38,11 @@ void AnimatedSprite::update(uint64_t delta)
 }
 
 
-void AnimatedSprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const
+void AnimatedSprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction, float layer) const
 {
     if (m_frames.empty())
         return;
-    Sprite::render(position, size, direction);
+    Sprite::render(position, size, direction, layer);
 }
 
 void AnimatedSprite::addFrame(std::string name, uint64_t duration)

@@ -37,8 +37,6 @@ createGameObjectFromChar(const char description,
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::TopLeft, position, size, direction);
     case 'J':
         return std::make_shared<BrickWall>(BrickWall::EBrickWallType::TopRight, position, size, direction);
-    case 'D':
-        return nullptr;
     case '5':
         return std::make_shared<BetonWall>(BetonWall::EBetonWallType::Right, position, size, direction);
     case '6':
@@ -52,11 +50,13 @@ createGameObjectFromChar(const char description,
     case 'A':
         return std::make_shared<Water>(position, size, direction);
     case 'B':
-        return std::make_shared<Tree>(position, size, direction);
+        return std::make_shared<Tree>(position, size, direction, -1.f);
     case 'C':
-        return std::make_shared<Ice>(position, size, direction);
+        return std::make_shared<Ice>(position, size, direction, 1.f);
     case 'E':
         return std::make_shared<Eagle>(true, position, size, direction);
+    case 'D':
+        return nullptr;
     default:
         std::cerr << "Unknown char description '" << description <<
                      "'.\n";

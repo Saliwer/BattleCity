@@ -8,8 +8,8 @@
 extern glm::ivec2 g_WindowSize;
 
 Tank::Tank(const glm::vec2& position, const glm::vec2& size,
-           const glm::vec2& direction, float velocity) :
-           IGameObject(position, size, glm::normalize(direction)),
+           const glm::vec2& direction, float velocity, float layer) :
+           IGameObject(position, size, glm::normalize(direction), layer),
            m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Right")),
            m_velocity(velocity, velocity), m_move(false)
 {
@@ -17,7 +17,7 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
 
 void Tank::render() const
 {
-    m_pMoveSprite->render(m_position, m_size, m_direction);
+    m_pMoveSprite->render(m_position, m_size, m_direction, m_layer);
 }
 
 void Tank::update(uint64_t deltaTime)

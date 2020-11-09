@@ -31,7 +31,7 @@ namespace RenderEngine
         Sprite&& operator=(Sprite&&) = delete;
 
 
-        virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const;
+        virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction, float layer = 0) const;
         virtual void update(uint64_t delta){}
         void setSubTexture(const std::string& name);
 

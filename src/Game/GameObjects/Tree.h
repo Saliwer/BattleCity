@@ -22,7 +22,7 @@ public:
     };
 
     Tree(const glm::vec2& position, const glm::vec2& size,
-         const glm::vec2& direction);
+         const glm::vec2& direction, float layer = 0.f);
     virtual ~Tree();
     virtual void render() const override;
     virtual void update(uint64_t delta) override {}

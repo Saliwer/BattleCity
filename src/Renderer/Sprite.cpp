@@ -69,12 +69,12 @@ Sprite::~Sprite()
 {
 }
 
-void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const
+void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction, float layer) const
 {
     m_pShaderProg->use();
     glm::mat4 modelMatrix = glm::mat4(1.f);
 
-    modelMatrix = glm::translate(modelMatrix, glm::vec3(position, 0.f));
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, layer));
     modelMatrix = glm::translate(modelMatrix, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.f));
     modelMatrix = glm::rotate(modelMatrix, glm::orientedAngle(glm::vec2(1.f, 0.f), direction), glm::vec3(0.f, 0.f, 1.f));
     modelMatrix = glm::translate(modelMatrix, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.f));

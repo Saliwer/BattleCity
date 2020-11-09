@@ -7,4 +7,8 @@ out vec4 FragColor;
 void main()
 {
    FragColor = texture(myTexture, textCoord);
+   if (FragColor.rgb == vec3(0.0))
+   {
+      discard;
+   }
 }

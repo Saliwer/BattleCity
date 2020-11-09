@@ -32,7 +32,7 @@ public:
 
     void update(uint64_t delta);
     void addFrame(std::string name, uint64_t duration);
-    virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction) const override;
+    virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction, float layer = 0.f) const override;
 
 protected:
     std::vector<Frame>  m_frames;

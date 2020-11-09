@@ -68,6 +68,7 @@ int main(int argc, char* argv[])
     }
 
     RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
+    RenderEngine::Renderer::setDepthTest(true);
     auto lastTime = std::chrono::high_resolution_clock::now();
     // game loop
     //----------
@@ -91,7 +92,7 @@ int main(int argc, char* argv[])
 
         // render
         //-------
-        RenderEngine::Renderer::clear(GL_COLOR_BUFFER_BIT);
+        RenderEngine::Renderer::clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         g_Game->render();
 
         // Swap front and back buffers

@@ -6,7 +6,7 @@
 
 BrickWall::BrickWall(EBrickWallType brickWallType,
                      const glm::vec2& position, const glm::vec2& size,
-                     const glm::vec2& direction) : IGameObject(position, size, direction)
+                     const glm::vec2& direction, float layer) : IGameObject(position, size, direction, layer)
 {
     m_blockOffsets = {
         glm::vec2(0.f, m_size.y / 2.f),
@@ -76,7 +76,8 @@ void BrickWall::renderBrick(EBrickLocation eLocation) const
     EBrickWallState state = m_eCurrentBrickStates[static_cast<size_t>(eLocation)];
     if (state != EBrickWallState::destroyed)
     {
-        m_pSprites[static_cast<size_t>(state)]->render(m_position + m_blockOffsets[static_cast<size_t>(eLocation)], m_size / 2.f, m_direction);
+        m_pSprites[static_cast<size_t>(state)]->render(m_position + m_blockOffsets[static_cast<size_t>(eLocation)],
+                                                       m_size / 2.f, m_direction, m_layer);
     }
 }
 

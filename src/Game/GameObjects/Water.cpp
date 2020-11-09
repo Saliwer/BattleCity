@@ -5,7 +5,7 @@
 
 
 Water::Water(const glm::vec2& position, const glm::vec2& size,
-           const glm::vec2& direction) : IGameObject(position, size, direction)
+             const glm::vec2& direction, float layer) : IGameObject(position, size, direction, layer)
 {
     m_blockOffsets = {
         glm::vec2(0.f, m_size.y / 2.f),
@@ -22,7 +22,9 @@ Water::~Water()
 
 void Water::renderBrick(EWaterLocation eLocation) const
 {
-    m_pSprite->render(m_position + m_blockOffsets[static_cast<size_t>(eLocation)], m_size / 2.f, m_direction);
+    m_pSprite->render(m_position + m_blockOffsets[static_cast<size_t>(eLocation)],
+                      m_size / 2.f, m_direction, m_layer);
+
 }
 
 void Water::render() const

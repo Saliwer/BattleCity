@@ -25,5 +25,9 @@ void Renderer::setViewport(unsigned int width, unsigned int height,
 {
     glViewport(rightOffset, topOffset, width, height);
 }
+void Renderer::setDepthTest(bool flag)
+{
+    flag ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+}
 
 }
