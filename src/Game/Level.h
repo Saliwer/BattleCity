@@ -17,9 +17,10 @@ class Level
     std::vector<std::shared_ptr<IGameObject>> m_levelObjects;
     size_t m_width;
     size_t m_height;
-    const unsigned int m_BLOCK_SIZE = 16;
 
 public:
+    static constexpr unsigned int m_BLOCK_SIZE = 16;
+
     Level(const std::vector<std::string>& levelDescription);
     void render() const;
     void update(uint64_t delta);

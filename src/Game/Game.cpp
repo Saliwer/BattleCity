@@ -29,14 +29,15 @@ Game::~Game()
 bool Game::init()
 {
     ResourceManager::loadJSONResources("resource/resources.json");
+    ResourceManager::loadJSONLevels("resource/levels.json");
     std::shared_ptr<RenderEngine::ShaderProgram> tankShaderProgram =
         ResourceManager::getShaderProgram("spriteShader");
 
     if (!tankShaderProgram)
         return false;
 
-    m_pTank = std::make_unique<Tank>(glm::vec2(0.f, 0.f), glm::vec2(16.f, 16.f), glm::vec2(0.f, 1.f), 0.8f);
-    m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[1]);
+    m_pTank = std::make_unique<Tank>(glm::vec2(0.f, 0.f), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
+    m_pLevel = std::make_unique<Level>(ResourceManager::loadLevel(1));
     m_windowSize.x = static_cast<float>(m_pLevel->getLevelWidth());
     m_windowSize.y = static_cast<float>(m_pLevel->getLevelHeight());
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,

@@ -6,7 +6,6 @@
 #include "../Renderer/AnimatedSprite.h"
 #include "../Renderer/ShaderProgram.h"
 
-#include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
 
 #include <fstream>
@@ -28,7 +27,8 @@ ResourceManager::MapShaderPrograms  ResourceManager::m_programs;
 ResourceManager::MapTextures        ResourceManager::m_textures;
 ResourceManager::MapSprites         ResourceManager::m_sprites;
 ResourceManager::MapAnimatedSprites ResourceManager::m_animatedSprites;
-ResourceManager::LevelsArray        ResourceManager::m_levels;
+std::vector<std::string>        ResourceManager::m_level;
+rapidjson::Document                 ResourceManager::m_levelDocument;
 std::string                         ResourceManager::m_path;
 
 
@@ -259,7 +259,7 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
     rapidjson::ParseResult parseResult = JSON_document.Parse(JSONstring.c_str());
     if (!parseResult)
     {
-        std::cerr << "ResourceManager: JSON parse error: " << rapidjson::GetParseError_En(parseResult.Code()) <<
+        std::cerr << "ResourceManager: JSON resource parse error: " << rapidjson::GetParseError_En(parseResult.Code()) <<
         "(" << parseResult.Offset() << ")" << std::endl;
         return false;
     }
@@ -329,21 +329,44 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
             }
         }
     }
+    return true;
+}
 
-    //Parsing levels
-    assert(JSON_document.HasMember("levels") && "There is no levels in *.json file");
-    rapidjson::Document::ConstMemberIterator levelIt = JSON_document.FindMember("levels");
-    for (const auto& currentLevel : levelIt->value.GetArray())
+bool ResourceManager::loadJSONLevels(const std::string& JSONLevelPath)
+{
+    const std::string JSONstring = getFileContent(JSONLevelPath);
+    if (JSONstring.empty())
     {
-        const auto& description = currentLevel["description"].GetArray();
-        std::vector<std::string> levelRows;
-        levelRows.reserve(description.Size());
-        for(const auto& currentRow : description)
-        {
-            levelRows.emplace_back(currentRow.GetString());
-        }
-        m_levels.emplace_back(std::move(levelRows));
+        std::cerr << "ResourceManager: No JSON level file!\n";
+        return false;
+    }
+
+    rapidjson::ParseResult parseResult = m_levelDocument.Parse(JSONstring.c_str());
+    if (!parseResult)
+    {
+        std::cerr << "ResourceManager: JSON level parse error: " << rapidjson::GetParseError_En(parseResult.Code()) <<
+        "(" << parseResult.Offset() << ")" << std::endl;
+        return false;
     }
 
     return true;
+}
+
+const std::vector<std::string>& ResourceManager::loadLevel(unsigned int levelNumber)
+{
+    assert(m_levelDocument.HasMember("numberOfLevels") && "There is no 'numberOfLevels' in *.json file");
+    assert(m_levelDocument.HasMember("levels") && "There is no 'levels' in *.json file");
+    unsigned int numberOfLevels = m_levelDocument["numberOfLevels"].GetUint();
+    assert((levelNumber < numberOfLevels) && "levelNumber out of range");
+    rapidjson::Document::ConstMemberIterator levelIt = m_levelDocument.FindMember("levels");
+    const auto& currentLevel = levelIt->value.GetArray()[levelNumber];
+
+    const auto& description = currentLevel["description"].GetArray();
+    std::vector<std::string> levelRows;
+    for(const auto& currentRow : description)
+    {
+        levelRows.emplace_back(currentRow.GetString());
+    }
+    m_level = std::move(levelRows);
+    return m_level;
 }

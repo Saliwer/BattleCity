@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 
+#include <rapidjson/document.h>
 #include "../Renderer/AnimatedSprite.h"
 
 
@@ -21,14 +22,14 @@ class ResourceManager
     using MapTextures           = std::map<std::string, std::shared_ptr<RenderEngine::Texture2D>>;
     using MapSprites            = std::map<std::string, std::shared_ptr<RenderEngine::Sprite>>;
     using MapAnimatedSprites    = std::map<std::string, std::shared_ptr<RenderEngine::AnimatedSprite>>;
-    using LevelsArray           = std::vector<std::vector<std::string>>;
 
-    static MapShaderPrograms  m_programs;
-    static MapTextures        m_textures;
-    static MapSprites         m_sprites;
-    static MapAnimatedSprites m_animatedSprites;
-    static LevelsArray        m_levels;
-    static std::string        m_path;
+    static MapShaderPrograms   m_programs;
+    static MapTextures         m_textures;
+    static MapSprites          m_sprites;
+    static MapAnimatedSprites  m_animatedSprites;
+    static std::vector<std::string>   m_level;
+    static rapidjson::Document m_levelDocument;
+    static std::string         m_path;
 
 public:
     static void setExecutablePath(const std::string& executablePath);
@@ -78,8 +79,9 @@ public:
     getAnimatedSprite(const std::string& spriteName);
 
     static bool loadJSONResources(const std::string& JSONpath);
+    static bool loadJSONLevels(const std::string& JSONLevelPath);
 
-    static const LevelsArray& getLevels() { return m_levels; }
+    static const std::vector<std::string>& loadLevel(unsigned int levelNumber);
 
 private:
     static std::string getFileContent(const std::string& filePath);

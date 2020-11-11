@@ -15,7 +15,7 @@ class Game
     enum class EGameState{
         ACTIVE,
         PAUSE
-    } ;
+    };
 
     glm::ivec2              m_windowSize;
     std::array<bool, 350>   m_keys;
