@@ -13,7 +13,7 @@ class BetonWall : public IGameObject
 {
 public:
 
-    enum class EBetonWallType
+    enum class EBetonWallType : uint8_t
     {
         All = 0,
         Top,
@@ -26,13 +26,13 @@ public:
         BottomRight
     };
 
-    enum class EBetonWallState
+    enum class EBetonWallState : uint8_t
     {
         Unbroken,
         Destroyed
     };
 
-    enum class EBetonLocation
+    enum class EBetonLocation : uint8_t
     {
         TopLeft,
         TopRight,

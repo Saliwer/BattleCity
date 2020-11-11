@@ -13,7 +13,7 @@ class BrickWall : public IGameObject
 {
 public:
 
-    enum class EBrickWallType
+    enum class EBrickWallType : uint8_t
     {
         All = 0,
         Top,
@@ -26,7 +26,7 @@ public:
         BottomRight
     };
 
-    enum class EBrickWallState
+    enum class EBrickWallState : uint8_t
     {
         fullBrick,
         topLeftBrick,
@@ -48,7 +48,7 @@ public:
         destroyed
     };
 
-    enum class EBrickLocation
+    enum class EBrickLocation : uint8_t
     {
         TopLeft,
         TopRight,

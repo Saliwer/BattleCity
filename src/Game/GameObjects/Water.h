@@ -13,7 +13,7 @@ class Water : public IGameObject
 {
 public:
 
-    enum class EWaterLocation
+    enum class EWaterLocation : uint8_t
     {
         TopLeft,
         TopRight,

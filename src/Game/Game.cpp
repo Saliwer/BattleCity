@@ -17,8 +17,9 @@
 
 #include <iostream>
 
-Game::Game(const glm::ivec2& windowSize) : m_windowSize(windowSize),
-                                           m_gameState(EGameState::ACTIVE)
+Game::Game(const glm::ivec2& windowSize) : m_windowSize(windowSize)
+                                         , m_gameState(EGameState::ACTIVE)
+                                         , m_gameDifficulty(EGameDifficulty::EASY)
 {
     m_keys.fill(false);
 }
@@ -36,8 +37,9 @@ bool Game::init()
     if (!tankShaderProgram)
         return false;
 
-    m_pTank = std::make_unique<Tank>(glm::vec2(0.f, 0.f), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
-    m_pLevel = std::make_unique<Level>(ResourceManager::loadLevel(1));
+    m_pLevel = createLevel(1);
+    m_pTank = std::make_unique<Tank>(m_pLevel->getPlayer1RespawnSpot(), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
+
     m_windowSize.x = static_cast<float>(m_pLevel->getLevelWidth());
     m_windowSize.y = static_cast<float>(m_pLevel->getLevelHeight());
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
@@ -54,19 +56,21 @@ bool Game::init()
 
 void Game::render()
 {
-    if (m_pTank)
-        m_pTank->render();
     if (m_pLevel)
         m_pLevel->render();
+
+    if (m_pTank)
+        m_pTank->render();
 
 }
 
 void Game::update(uint64_t deltaTime)
 {
-    if (m_pTank)
-        m_pTank->update(deltaTime);
     if (m_pLevel)
         m_pLevel->update(deltaTime);
+    if (m_pTank)
+        m_pTank->update(deltaTime);
+
 }
 
 void Game::processInput(uint64_t deltaTime)
@@ -101,3 +105,18 @@ void Game::setKey(int key, int action)
 
 size_t Game::getCurrentLevelWidth() const { return m_pLevel->getLevelWidth(); }
 size_t Game::getCurrentLevelHeight() const { return m_pLevel->getLevelHeight(); }
+
+std::unique_ptr<Level> Game::createLevel(size_t levelNumber)
+{
+    switch(m_gameDifficulty)
+    {
+    case EGameDifficulty::EASY:
+        return std::make_unique<EasyLevel>(ResourceManager::loadLevel(levelNumber), 3);
+    case EGameDifficulty::MEDIUM:
+        return nullptr;         // TODO!
+    case EGameDifficulty::HARD:
+        return nullptr;         // TODO!
+    default:
+        return nullptr;
+    }
+}

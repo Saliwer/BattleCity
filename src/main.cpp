@@ -7,6 +7,9 @@
 #include <chrono>
 #include <memory>
 
+#include <cstdlib>
+#include <ctime>
+
 // My classes
 #include "Game/Game.h"
 #include "Manager/ResourceManager.h"
@@ -56,6 +59,10 @@ int main(int argc, char* argv[])
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+
+    //Time init
+    srand(time(NULL));
+
 
     // ResourceManager init
     ResourceManager::setExecutablePath(argv[0]);

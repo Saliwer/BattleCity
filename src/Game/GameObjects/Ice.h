@@ -13,7 +13,7 @@ class Ice : public IGameObject
 {
 public:
 
-    enum class EIceLocation
+    enum class EIceLocation : uint8_t
     {
         TopLeft,
         TopRight,

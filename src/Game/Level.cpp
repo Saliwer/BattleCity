@@ -67,7 +67,9 @@ createGameObjectFromChar(const char description,
 }
 
 
-Level::Level(const std::vector<std::string>& levelDescription)
+Level::Level(const std::vector<std::string>& levelDescription,
+             size_t countOfRespawnSpots) : m_countOfRespawnSpots(countOfRespawnSpots)
+                                         , m_activeRespawnSpots(0)
 {
     if (levelDescription.empty())
     {
@@ -85,10 +87,16 @@ Level::Level(const std::vector<std::string>& levelDescription)
         unsigned int XOffset = m_BLOCK_SIZE;
         for (const char currentDescription : currentRow)
         {
-            m_levelObjects.emplace_back(createGameObjectFromChar(currentDescription,
-                                                                 glm::vec2(XOffset, YOffset),
-                                                                 glm::vec2(m_BLOCK_SIZE, m_BLOCK_SIZE),
-                                                                 glm::vec2(1.f, 0.f)));
+            if (currentDescription == 'K')
+                m_playerRespawnSpot_1 = glm::ivec2(XOffset, YOffset);
+            else if (currentDescription == 'L')
+                m_playerRespawnSpot_2 = glm::ivec2(XOffset, YOffset);
+            else
+                m_levelObjects.emplace_back(createGameObjectFromChar(currentDescription,
+                                                                     glm::vec2(XOffset, YOffset),
+                                                                     glm::vec2(m_BLOCK_SIZE, m_BLOCK_SIZE),
+                                                                     glm::vec2(1.f, 0.f)));
+
             XOffset += m_BLOCK_SIZE;
         }
         YOffset -= m_BLOCK_SIZE;
@@ -123,3 +131,38 @@ void Level::update(uint64_t delta)
         if (object)
             object->update(delta);
 }
+
+const glm::ivec2& Level::getEnemyRespawnSpot()
+{
+    if (m_activeRespawnSpots < m_countOfRespawnSpots){
+        do
+        {
+            size_t index = rand() % m_enemyRespawnSpots.size();
+            auto searchIt = m_engagedRespawnSpots.find(index);
+            if (searchIt != m_engagedRespawnSpots.end())
+                continue;
+            else{
+                m_engagedRespawnSpots.insert(index);
+                ++m_activeRespawnSpots;
+                return m_enemyRespawnSpots[index];
+            }
+        }while(true);
+    }
+}
+
+EasyLevel::EasyLevel(const std::vector<std::string>& levelDescription,
+                     size_t countOfRespawnSpots) : Level(levelDescription, countOfRespawnSpots)
+{
+    m_enemyRespawnSpots.reserve(m_countOfRespawnSpots);
+    unsigned int YOffset = m_BLOCK_SIZE * (m_height - 1) + m_BLOCK_SIZE / 2.f;
+    unsigned int XOffset = m_BLOCK_SIZE;
+    const std::string& firstRow = levelDescription[0];
+    for (const char& currentDescription : firstRow)
+    {
+        if (currentDescription=='D' || currentDescription=='B' || currentDescription=='C')
+            m_enemyRespawnSpots.push_back(glm::ivec2(XOffset, YOffset));
+        XOffset += m_BLOCK_SIZE;
+    }
+}
+
+

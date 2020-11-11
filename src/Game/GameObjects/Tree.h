@@ -13,7 +13,7 @@ class Tree : public IGameObject
 {
 public:
 
-    enum class ETreeLocation
+    enum class ETreeLocation : uint8_t
     {
         TopLeft,
         TopRight,
