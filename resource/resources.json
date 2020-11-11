@@ -38,7 +38,7 @@
                     "beton8x8",
                     "tree8x8",
                     "ice8x8",
-                    "wall8x8",
+                    "border",
                     "bullet8x8"
             ]
         },
@@ -231,10 +231,10 @@
             "initialSubTexture"    : "ice8x8"
         },
         {
-            "name"              : "wall8x8",
+            "name"              : "border",
             "textureAtlas"      : "mapTexture8x8",
             "shader"            : "spriteShader",
-            "initialSubTexture"    : "wall8x8"
+            "initialSubTexture"    : "border"
         },
         {
             "name"              : "bullet8x8",

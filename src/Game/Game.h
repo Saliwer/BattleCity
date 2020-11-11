@@ -33,4 +33,6 @@ public:
     void processInput(uint64_t deltaTime);
     void setKey(int key, int action);
 
+    size_t getCurrentLevelWidth() const;
+    size_t getCurrentLevelHeight() const;
 };

@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a windowed mode window and its OpenGL context
-    GLFWwindow* window = glfwCreateWindow(g_WindowSize.x, g_WindowSize.y, "Hello World", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(g_WindowSize.x, g_WindowSize.y, "Battle City", NULL, NULL);
     if (!window)
     {
         std::cerr << "glfwCreateWindow failed!\n";
@@ -66,6 +66,8 @@ int main(int argc, char* argv[])
         std::cerr << "Couldn't init game!\n";
         return -1;
     }
+
+    glfwSetWindowSize(window, (int)g_Game->getCurrentLevelWidth(), (int)g_Game->getCurrentLevelHeight());
 
     RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
     RenderEngine::Renderer::setDepthTest(true);
@@ -120,7 +122,7 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
     g_WindowSize.x = width;
     g_WindowSize.y = height;
-    const float aspect_ratio = 13.f / 14.f;
+    const float aspect_ratio = static_cast<float>(g_Game->getCurrentLevelWidth()) / g_Game->getCurrentLevelHeight();;
     unsigned int viewPortWidth = width;
     unsigned int viewPortHeight = height;
     unsigned int viewPortXOffset = 0;

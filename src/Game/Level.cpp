@@ -6,6 +6,7 @@
 #include "GameObjects/Ice.h"
 #include "GameObjects/Water.h"
 #include "GameObjects/Eagle.h"
+#include "GameObjects/Border.h"
 
 #include <iostream>
 
@@ -76,22 +77,36 @@ Level::Level(const std::vector<std::string>& levelDescription)
 
     m_width = levelDescription[0].length();
     m_height = levelDescription.size();
-    m_levelObjects.reserve(m_width * m_height);
-    const unsigned int BLOCK_SIZE = 16;
-    unsigned int YOffset = BLOCK_SIZE * (m_height - 1);
+    const unsigned char countBorders = 4;
+    m_levelObjects.reserve(m_width * m_height + countBorders);
+    unsigned int YOffset = m_BLOCK_SIZE * (m_height - 1) + m_BLOCK_SIZE / 2.f;
     for (const std::string& currentRow : levelDescription)
     {
-        unsigned int XOffset = 0;
+        unsigned int XOffset = m_BLOCK_SIZE;
         for (const char currentDescription : currentRow)
         {
             m_levelObjects.emplace_back(createGameObjectFromChar(currentDescription,
                                                                  glm::vec2(XOffset, YOffset),
-                                                                 glm::vec2(BLOCK_SIZE, BLOCK_SIZE),
+                                                                 glm::vec2(m_BLOCK_SIZE, m_BLOCK_SIZE),
                                                                  glm::vec2(1.f, 0.f)));
-            XOffset += BLOCK_SIZE;
+            XOffset += m_BLOCK_SIZE;
         }
-        YOffset -= BLOCK_SIZE;
+        YOffset -= m_BLOCK_SIZE;
     }
+
+    //Add borders
+    //bottom border
+    m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2(m_BLOCK_SIZE, 0.f),
+                                                         glm::vec2(m_width*m_BLOCK_SIZE, m_BLOCK_SIZE/2.f)));
+    //top border
+    m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2(m_BLOCK_SIZE, m_height * m_BLOCK_SIZE + m_BLOCK_SIZE/2.f),
+                                                         glm::vec2(m_width*m_BLOCK_SIZE, m_BLOCK_SIZE/2.f)));
+    //left border
+    m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2(0.f, 0.f),
+                                                         glm::vec2(m_BLOCK_SIZE, getLevelHeight())));
+    //right border
+    m_levelObjects.emplace_back(std::make_shared<Border>(glm::vec2((m_width+1) * m_BLOCK_SIZE, 0.f),
+                                                         glm::vec2(m_BLOCK_SIZE*2, getLevelHeight())));
 }
 
 

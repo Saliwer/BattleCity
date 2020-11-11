@@ -37,7 +37,8 @@ bool Game::init()
 
     m_pTank = std::make_unique<Tank>(glm::vec2(0.f, 0.f), glm::vec2(16.f, 16.f), glm::vec2(0.f, 1.f), 0.8f);
     m_pLevel = std::make_unique<Level>(ResourceManager::getLevels()[1]);
-
+    m_windowSize.x = static_cast<float>(m_pLevel->getLevelWidth());
+    m_windowSize.y = static_cast<float>(m_pLevel->getLevelHeight());
     glm::mat4 projectionMatrix = glm::ortho(0.0f, (float)m_windowSize.x,
                                             0.0f, (float)m_windowSize.y,
                                             100.0f, -100.0f);
@@ -96,3 +97,6 @@ void Game::setKey(int key, int action)
     else if (action == GLFW_RELEASE)
         m_keys[key] = false;
 }
+
+size_t Game::getCurrentLevelWidth() const { return m_pLevel->getLevelWidth(); }
+size_t Game::getCurrentLevelHeight() const { return m_pLevel->getLevelHeight(); }
