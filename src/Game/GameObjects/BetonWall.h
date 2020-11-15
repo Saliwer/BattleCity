@@ -9,7 +9,7 @@ namespace RenderEngine {
     class Sprite;
 }
 
-class BetonWall : public IGameObject
+class BetonWall : public IStaticGameObject
 {
 public:
 
@@ -41,11 +41,9 @@ public:
     };
 
     BetonWall(EBetonWallType betonWallType,
-              const glm::vec2& position, const glm::vec2& size,
-              const glm::vec2& direction, float layer = 0);
+              const glm::vec2& position, const glm::vec2& size, float layer = 0);
     virtual ~BetonWall();
     virtual void render() const override;
-    virtual void update(uint64_t delta) override {}
 
 private:
     void renderBrick(EBetonLocation eLocation) const;

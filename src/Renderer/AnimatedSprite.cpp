@@ -19,7 +19,7 @@ AnimatedSprite::~AnimatedSprite()
 {
 }
 
-void AnimatedSprite::update(uint64_t delta)
+void AnimatedSprite::update(double delta)
 {
     if (m_frames.empty())
         return;
@@ -45,7 +45,14 @@ void AnimatedSprite::render(const glm::vec2& position, const glm::vec2& size, co
     Sprite::render(position, size, direction, layer);
 }
 
-void AnimatedSprite::addFrame(std::string name, uint64_t duration)
+void AnimatedSprite::render(const glm::vec2& position, const glm::vec2& size, float layer) const
+{
+    if (m_frames.empty())
+        return;
+    Sprite::render(position, size, layer);
+}
+
+void AnimatedSprite::addFrame(std::string name, double duration)
 {
     m_frames.emplace_back(std::move(name), duration);
 }

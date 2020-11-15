@@ -14,6 +14,7 @@
 #include "Game/Game.h"
 #include "Manager/ResourceManager.h"
 #include "Renderer/Renderer.h"
+#include "Physics/PhysicsEngine.h"
 
 // Math
 #include <glm/vec2.hpp>
@@ -74,7 +75,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    glfwSetWindowSize(window, (int)g_Game->getCurrentLevelWidth(), (int)g_Game->getCurrentLevelHeight());
+    //Physics engine init
+    Physics::PhysicsEngine::init();
+
+
+    glfwSetWindowSize(window, 3*(int)g_Game->getCurrentLevelWidth(), 2*(int)g_Game->getCurrentLevelHeight());
 
     RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
     RenderEngine::Renderer::setDepthTest(true);
@@ -86,8 +91,7 @@ int main(int argc, char* argv[])
         // calculate delta time
         //---------------------
         auto currentTime = std::chrono::high_resolution_clock::now();
-        uint64_t duration = std::chrono::duration_cast<std::chrono::microseconds>
-                                         (currentTime - lastTime).count();
+        double duration = std::chrono::duration<double, std::micro>(currentTime - lastTime).count();
         lastTime = currentTime;
 
         // poll for and process events
@@ -98,6 +102,7 @@ int main(int argc, char* argv[])
         // update game state
         //------------------
         g_Game->update(duration);
+        Physics::PhysicsEngine::update(duration);
 
         // render
         //-------
@@ -111,6 +116,7 @@ int main(int argc, char* argv[])
 
     // clean-up before exit
     //---------------------
+    Physics::PhysicsEngine::terminate();
     g_Game = nullptr;
     ResourceManager::unloadResources();
     glfwTerminate();

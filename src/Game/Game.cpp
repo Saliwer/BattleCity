@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "../Manager/ResourceManager.h"
+#include "../Physics/PhysicsEngine.h"
 #include "../Renderer/ShaderProgram.h"
 #include "../Renderer/Texture2D.h"
 #include "../Renderer/Sprite.h"
@@ -38,7 +39,8 @@ bool Game::init()
         return false;
 
     m_pLevel = createLevel(1);
-    m_pTank = std::make_unique<Tank>(m_pLevel->getPlayer1RespawnSpot(), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
+    m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
+    Physics::PhysicsEngine::addDynamicObject(m_pTank);
 
     m_windowSize.x = static_cast<float>(m_pLevel->getLevelWidth());
     m_windowSize.y = static_cast<float>(m_pLevel->getLevelHeight());
@@ -56,15 +58,15 @@ bool Game::init()
 
 void Game::render()
 {
-    if (m_pLevel)
-        m_pLevel->render();
-
     if (m_pTank)
         m_pTank->render();
 
+    if (m_pLevel)
+        m_pLevel->render();
+
 }
 
-void Game::update(uint64_t deltaTime)
+void Game::update(double deltaTime)
 {
     if (m_pLevel)
         m_pLevel->update(deltaTime);
@@ -73,26 +75,30 @@ void Game::update(uint64_t deltaTime)
 
 }
 
-void Game::processInput(uint64_t deltaTime)
+void Game::processInput(double deltaTime)
 {
     if (m_keys[GLFW_KEY_W]){
         m_pTank->setDirection(glm::vec2(0.f, 1.f));
-        m_pTank->move(true);
+        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"));
+        m_pTank->setVelocity(m_pTank->getMaxVelocity());
     }
     else if (m_keys[GLFW_KEY_D]){
         m_pTank->setDirection(glm::vec2(1.f, 0.f));
-        m_pTank->move(true);
+        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Right"));
+        m_pTank->setVelocity(m_pTank->getMaxVelocity());
     }
     else if (m_keys[GLFW_KEY_S]){
         m_pTank->setDirection(glm::vec2(0.f, -1.f));
-        m_pTank->move(true);
+        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Bottom"));
+        m_pTank->setVelocity(m_pTank->getMaxVelocity());
     }
     else if(m_keys[GLFW_KEY_A]){
         m_pTank->setDirection(glm::vec2(-1.f, 0.f));
-        m_pTank->move(true);
+        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Left"));
+        m_pTank->setVelocity(m_pTank->getMaxVelocity());
     }
     else
-        m_pTank->move(false);
+        m_pTank->setVelocity(0.f);
 }
 
 void Game::setKey(int key, int action)
@@ -106,12 +112,12 @@ void Game::setKey(int key, int action)
 size_t Game::getCurrentLevelWidth() const { return m_pLevel->getLevelWidth(); }
 size_t Game::getCurrentLevelHeight() const { return m_pLevel->getLevelHeight(); }
 
-std::unique_ptr<Level> Game::createLevel(size_t levelNumber)
+std::shared_ptr<Level> Game::createLevel(size_t levelNumber)
 {
     switch(m_gameDifficulty)
     {
     case EGameDifficulty::EASY:
-        return std::make_unique<EasyLevel>(ResourceManager::loadLevel(levelNumber), 3);
+        return std::make_shared<EasyLevel>(ResourceManager::loadLevel(levelNumber), 3);
     case EGameDifficulty::MEDIUM:
         return nullptr;         // TODO!
     case EGameDifficulty::HARD:

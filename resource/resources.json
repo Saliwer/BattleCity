@@ -326,19 +326,27 @@
             "frames"            : [
                 {
                     "subTexture"    : "respawn1",
-                    "duration"      : 200000
+                    "duration"      : 100000
                 },
                 {
                     "subTexture"    : "respawn2",
-                    "duration"      : 200000
+                    "duration"      : 100000
                 },
                 {
                     "subTexture"    : "respawn3",
-                    "duration"      : 200000
+                    "duration"      : 100000
                 },
                 {
                     "subTexture"    : "respawn4",
-                    "duration"      : 200000
+                    "duration"      : 100000
+                },
+                {
+                    "subTexture"    : "respawn3",
+                    "duration"      : 100000
+                },
+                {
+                    "subTexture"    : "respawn2",
+                    "duration"      : 100000
                 }
             ]
         },
@@ -350,11 +358,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "shield1",
-                    "duration"      : 200000
+                    "duration"      : 100000
                 },
                 {
                     "subTexture"    : "shield2",
-                    "duration"      : 200000
+                    "duration"      : 100000
                 }
             ]
         },

@@ -9,7 +9,7 @@ namespace RenderEngine {
     class Sprite;
 }
 
-class BrickWall : public IGameObject
+class BrickWall : public IStaticGameObject
 {
 public:
 
@@ -57,11 +57,9 @@ public:
     };
 
     BrickWall(EBrickWallType brickWallType,
-              const glm::vec2& position, const glm::vec2& size,
-              const glm::vec2& direction, float layer = 0.f);
+              const glm::vec2& position, const glm::vec2& size, float layer = 0.f);
     virtual ~BrickWall();
     virtual void render() const override;
-    virtual void update(uint64_t delta) override {}
 
 private:
     void renderBrick(EBrickLocation eLocation) const;

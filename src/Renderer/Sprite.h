@@ -32,7 +32,8 @@ namespace RenderEngine
 
 
         virtual void render(const glm::vec2& position, const glm::vec2& size, const glm::vec2& direction, float layer = 0) const;
-        virtual void update(uint64_t delta){}
+        virtual void render(const glm::vec2& position, const glm::vec2& size, float layer = 0.f) const;
+        virtual void update(double delta){}
         void setSubTexture(const std::string& name);
 
     protected:

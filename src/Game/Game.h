@@ -31,21 +31,21 @@ public:
 
     bool init();
     void render();
-    void update(uint64_t deltaTime);
-    void processInput(uint64_t deltaTime);
+    void update(double deltaTime);
+    void processInput(double deltaTime);
     void setKey(int key, int action);
 
     size_t getCurrentLevelWidth() const;
     size_t getCurrentLevelHeight() const;
 
 protected:
-    std::unique_ptr<Level> createLevel(size_t levelNumber);
+    std::shared_ptr<Level> createLevel(size_t levelNumber);
 
 private:
     glm::ivec2              m_windowSize;
     std::array<bool, 350>   m_keys;
     EGameState              m_gameState;
     EGameDifficulty         m_gameDifficulty;
-    std::unique_ptr<Level>  m_pLevel;
-    std::unique_ptr<Tank>   m_pTank;
+    std::shared_ptr<Level>  m_pLevel;
+    std::shared_ptr<Tank>   m_pTank;
 };

@@ -9,7 +9,7 @@ namespace RenderEngine {
     class Sprite;
 }
 
-class Ice : public IGameObject
+class Ice : public IStaticGameObject
 {
 public:
 
@@ -21,11 +21,9 @@ public:
         BottomRight
     };
 
-    Ice(const glm::vec2& position, const glm::vec2& size,
-         const glm::vec2& direction, float layer = 0.f);
+    Ice(const glm::vec2& position, const glm::vec2& size, float layer = 0.f);
     virtual ~Ice();
     virtual void render() const override;
-    virtual void update(uint64_t delta) override {}
 
 private:
     void renderBrick(EIceLocation eLocation) const;

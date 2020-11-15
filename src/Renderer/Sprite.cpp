@@ -90,6 +90,24 @@ void Sprite::render(const glm::vec2& position, const glm::vec2& size, const glm:
     RenderEngine::Renderer::draw(m_vertexArray, m_indices, *m_pShaderProg);
 }
 
+void Sprite::render(const glm::vec2& position, const glm::vec2& size, float layer) const
+{
+    m_pShaderProg->use();
+    glm::mat4 modelMatrix = glm::mat4(1.f);
+
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(position.x, position.y, layer));
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(size, 1.f));
+
+    m_vertexArray.bind();
+    glActiveTexture(GL_TEXTURE0);
+
+
+    m_pTexture->bind();
+    m_pShaderProg->setUniform("modelMatrix", modelMatrix);
+
+    RenderEngine::Renderer::draw(m_vertexArray, m_indices, *m_pShaderProg);
+}
+
 void Sprite::setSubTexture(const std::string& name)
 {
     m_activeSubTexture = name;

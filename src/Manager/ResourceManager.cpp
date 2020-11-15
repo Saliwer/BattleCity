@@ -316,7 +316,7 @@ bool ResourceManager::loadJSONResources(const std::string& JSONpath)
             for(const auto& frame : framesArray)
             {
                 std::string subTexture = frame["subTexture"].GetString();
-                uint64_t duration = frame["duration"].GetUint64();
+                double duration = frame["duration"].GetDouble();
                 pAnimetedSprite->addFrame(subTexture, duration);
             }
         }

@@ -9,7 +9,7 @@ namespace RenderEngine {
     class AnimatedSprite;
 }
 
-class Water : public IGameObject
+class Water : public IStaticGameObject
 {
 public:
 
@@ -21,11 +21,10 @@ public:
         BottomRight
     };
 
-    Water(const glm::vec2& position, const glm::vec2& size,
-         const glm::vec2& direction, float layer = 0.f);
+    Water(const glm::vec2& position, const glm::vec2& size, float layer = 0.f);
     virtual ~Water();
     virtual void render() const override;
-    virtual void update(uint64_t delta) override;
+    virtual void update(double delta) override;
 
 private:
     void renderBrick(EWaterLocation eLocation) const;

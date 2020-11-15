@@ -1,41 +1,73 @@
 #include "Tank.h"
 
 #include "../../Renderer/AnimatedSprite.h"
-
-#include <iostream>
 #include "../../Manager/ResourceManager.h"
 
+#include <iostream>
 extern glm::ivec2 g_WindowSize;
 
 Tank::Tank(const glm::vec2& position, const glm::vec2& size,
-           const glm::vec2& direction, float velocity, float layer) :
-           IGameObject(position, size, glm::normalize(direction), layer),
-           m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Right")),
-           m_velocity(velocity, velocity), m_move(false)
+           const glm::vec2& direction, float velocity, float layer)
+           : IDynamicGameObject(position, size, glm::normalize(direction), 0.f, layer)
+           , m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"))
+           , m_maxVelocity(velocity)
+           , m_pRespawnSprite(ResourceManager::getAnimatedSprite("respawn"))
+           , m_pShieldSprite(ResourceManager::getAnimatedSprite("shield"))
+           , m_isSpawning(true), m_hasShield(false)
 {
+    m_respawnTimer.setCallBack([this]()
+                               {
+                                  m_isSpawning = false;
+                                  m_hasShield = true;
+                                  m_shieldTimer.start(2000000);
+                               });
+    m_respawnTimer.start(2000000);
+    m_shieldTimer.setCallBack([this]()
+                              {
+                                 m_hasShield = false;
+                              });
+}
+void Tank::setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite)
+{
+    m_pMoveSprite = std::move(pMoveSprite);
+}
+void Tank::setVelocity(float velocity)
+{
+    if (!m_isSpawning)
+        IDynamicGameObject::setVelocity(velocity);
 }
 
 void Tank::render() const
 {
-    m_pMoveSprite->render(m_position, m_size, m_direction, m_layer);
+    if (m_isSpawning)
+        m_pRespawnSprite->render(m_position, m_size, m_layer);
+    else
+    {
+        if (m_hasShield)
+            m_pShieldSprite->render(m_position, m_size, m_layer);
+        m_pMoveSprite->render(m_position, m_size, m_layer);
+    }
+
 }
 
-void Tank::update(uint64_t deltaTime)
+void Tank::update(double deltaTime)
 {
-    if (m_move)
+    if (m_isSpawning)
     {
-        //deltaTime in microseconds!
-        float dt = deltaTime / 10000.f;
-        m_position = m_position + dt * m_velocity * m_direction;
-        if ((int)m_position.x + m_size.x >= g_WindowSize.x)
-            m_position.x = (float)g_WindowSize.x - m_size.x;
-        else if (m_position.x < 0.f)
-            m_position.x = 0.f;
-        if ((int)m_position.y + m_size.y >= g_WindowSize.y)
-            m_position.y = (float)g_WindowSize.y - m_size.y;
-        else if (m_position.y < 0.f)
-            m_position.y = 0.f;
-        m_pMoveSprite->update(deltaTime);
+        m_pRespawnSprite->update(deltaTime);
+        m_respawnTimer.update(deltaTime);
+    }
+    else
+    {
+        if (m_velocity > 0)
+        {
+            m_pMoveSprite->update(deltaTime);
+        }
+        if (m_hasShield)
+        {
+            m_pShieldSprite->update(deltaTime);
+            m_shieldTimer.update(deltaTime);
+        }
     }
 }
 
