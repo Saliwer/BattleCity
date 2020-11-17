@@ -26,6 +26,9 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
                               {
                                  m_hasShield = false;
                               });
+
+    m_AABB.leftBottomXY = m_position;
+    m_AABB.rightTopXY = m_position + m_size;
 }
 void Tank::setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite)
 {
@@ -69,5 +72,12 @@ void Tank::update(double deltaTime)
             m_shieldTimer.update(deltaTime);
         }
     }
+}
+
+Physics::AABB& Tank::getGlobalAABB()
+{
+    m_AABB.leftBottomXY = m_position;
+    m_AABB.rightTopXY = m_position + m_size;
+    return m_AABB;
 }
 

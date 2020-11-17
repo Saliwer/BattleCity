@@ -31,16 +31,20 @@ Game::~Game()
 bool Game::init()
 {
     ResourceManager::loadJSONResources("resource/resources.json");
-    ResourceManager::loadJSONLevels("resource/levels.json");
+    ResourceManager::loadJSONLevels("resource/TiledLevels.json");
     std::shared_ptr<RenderEngine::ShaderProgram> tankShaderProgram =
         ResourceManager::getShaderProgram("spriteShader");
 
     if (!tankShaderProgram)
         return false;
 
-    m_pLevel = createLevel(1);
-    m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(), glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE), glm::vec2(0.f, 1.f), 0.8f);
+    m_pLevel = createLevel(0);
+    m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(),
+                                     glm::vec2(Level::m_BLOCK_SIZE*2, Level::m_BLOCK_SIZE*2),
+                                     glm::vec2(0.f, 1.f), 0.8f);
+
     Physics::PhysicsEngine::addDynamicObject(m_pTank);
+    Physics::PhysicsEngine::setLevel(m_pLevel);
 
     m_windowSize.x = static_cast<float>(m_pLevel->getLevelWidth());
     m_windowSize.y = static_cast<float>(m_pLevel->getLevelHeight());
@@ -117,7 +121,7 @@ std::shared_ptr<Level> Game::createLevel(size_t levelNumber)
     switch(m_gameDifficulty)
     {
     case EGameDifficulty::EASY:
-        return std::make_shared<EasyLevel>(ResourceManager::loadLevel(levelNumber), 3);
+        return std::make_shared<EasyLevel>(ResourceManager::loadLevel(levelNumber));
     case EGameDifficulty::MEDIUM:
         return nullptr;         // TODO!
     case EGameDifficulty::HARD:

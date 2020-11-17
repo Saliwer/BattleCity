@@ -2,6 +2,8 @@
 
 #include <glm/vec2.hpp>
 #include <glm/glm.hpp>
+#include <vector>
+#include "../../Physics/PhysicsEngine.h"
 
 class IGameObject
 {
@@ -14,6 +16,7 @@ public:
     virtual void update(double delta) = 0;
 
     const glm::vec2& getPosition() const { return m_position; }
+    glm::vec2& getPosition() { return m_position; }
     const glm::vec2& getSize() const { return m_size; }
     float getLayer() const { return m_layer; }
 
@@ -36,14 +39,15 @@ public:
 
     const glm::vec2& getDirection() const { return m_direction; }
     float getVelocity() const { return m_velocity; }
+    virtual Physics::AABB& getGlobalAABB() { return m_AABB; }
 
     virtual void setVelocity(float velocity) { m_velocity = velocity; }
     void setDirection(const glm::vec2& direction) { m_direction = glm::normalize(direction); }
 
 protected:
-    glm::vec2   m_direction;
-    float       m_velocity;
-
+    glm::vec2       m_direction;
+    float           m_velocity;
+    Physics::AABB   m_AABB;
 };
 
 class IStaticGameObject : public IGameObject
@@ -53,8 +57,9 @@ public:
 
     virtual ~IStaticGameObject() {}
 
+    virtual std::vector<Physics::AABB>& getGlobalAABB() { return m_AABBs; }
+
     virtual void update(double delta) override {}
-
 protected:
-
+    std::vector<Physics::AABB> m_AABBs;
 };

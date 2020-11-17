@@ -9,12 +9,14 @@
 #include "../Renderer/AnimatedSprite.h"
 
 
+
 namespace RenderEngine
 {
     class ShaderProgram;
     class Texture2D;
     class Sprite;
 }
+struct LevelDescription;
 
 class ResourceManager
 {
@@ -27,7 +29,6 @@ class ResourceManager
     static MapTextures         m_textures;
     static MapSprites          m_sprites;
     static MapAnimatedSprites  m_animatedSprites;
-    static std::vector<std::string>   m_level;
     static rapidjson::Document m_levelDocument;
     static std::string         m_path;
 
@@ -81,7 +82,7 @@ public:
     static bool loadJSONResources(const std::string& JSONpath);
     static bool loadJSONLevels(const std::string& JSONLevelPath);
 
-    static const std::vector<std::string>& loadLevel(unsigned int levelNumber);
+    static LevelDescription loadLevel(unsigned int levelNumber);
 
 private:
     static std::string getFileContent(const std::string& filePath);

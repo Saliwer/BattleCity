@@ -1,10 +1,12 @@
 #include "PhysicsEngine.h"
 
-#include <glm/vec2.hpp>
+#include "../Game/GameObjects/IGameObject.h"
+#include "../Game/Level.h"
 
 namespace Physics
 {
-   std::unordered_set<std::shared_ptr<IDynamicGameObject>> PhysicsEngine::m_dynamicObjects;
+    std::unordered_set<std::shared_ptr<IDynamicGameObject>> PhysicsEngine::m_dynamicObjects;
+    std::shared_ptr<Level>   PhysicsEngine::m_currentLevel;
 
     void PhysicsEngine::init()
     {
@@ -14,11 +16,17 @@ namespace Physics
     void PhysicsEngine::terminate()
     {
         m_dynamicObjects.clear();
+        m_currentLevel.reset();
     }
 
     void PhysicsEngine::addDynamicObject(std::shared_ptr<IDynamicGameObject> object)
     {
         m_dynamicObjects.insert(std::move(object));
+    }
+
+    void PhysicsEngine::setLevel(std::shared_ptr<Level> level)
+    {
+        m_currentLevel = std::move(level);
     }
 
     void PhysicsEngine::update(double delta)
@@ -31,7 +39,8 @@ namespace Physics
                 float dt = delta / 10000.f;
                 glm::vec2 newPosition = object->getPosition() + dt
                                         * object->getVelocity() * object->getDirection();
-                object->setPosition(newPosition);
+                //m_currentLevel->getObjectsInArea(object->getPosition(), object->getPosition() + object->getSize());
+                object->getPosition() = newPosition;
             }
         }
     }

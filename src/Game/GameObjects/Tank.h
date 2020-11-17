@@ -6,6 +6,7 @@
 
 #include "IGameObject.h"
 #include "../../System/Timer.h"
+
 namespace RenderEngine
 {
     class AnimatedSprite;
@@ -22,10 +23,12 @@ public:
     virtual void render() const override;
     virtual void update(double deltaTime) override;
 
-    virtual void setVelocity(float velocity) override;
     float getMaxVelocity() const { return m_maxVelocity; }
+    virtual Physics::AABB& getGlobalAABB() override;
 
     void setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite);
+    virtual void setVelocity(float velocity) override;
+
 private:
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pMoveSprite;
     float                                           m_maxVelocity;

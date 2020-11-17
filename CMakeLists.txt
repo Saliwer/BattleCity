@@ -51,11 +51,11 @@ add_executable(${PROJECT_NAME} src/main.cpp
                 src/Manager/ResourceManager.cpp
                 src/Manager/stb_image.h
 
-                src/System/Timer.h
-                src/System/Timer.cpp
-
                 src/Physics/PhysicsEngine.h
                 src/Physics/PhysicsEngine.cpp
+
+                src/System/Timer.h
+                src/System/Timer.cpp
                 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE external/glm)

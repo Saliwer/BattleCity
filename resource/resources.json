@@ -200,15 +200,15 @@
             "frames"            :[
                 {
                     "subTexture"    : "water1_8x8",
-                    "duration"      : 2000000
+                    "duration"      : 500000000
                 },
                 {
                     "subTexture"    : "water2_8x8",
-                    "duration"      : 2000000
+                    "duration"      : 500000000
                 },
                 {
                     "subTexture"    : "water3_8x8",
-                    "duration"      : 2000000
+                    "duration"      : 500000000
                 }
             ]
         },

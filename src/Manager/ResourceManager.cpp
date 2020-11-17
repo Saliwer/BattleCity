@@ -5,6 +5,7 @@
 #include "../Renderer/Sprite.h"
 #include "../Renderer/AnimatedSprite.h"
 #include "../Renderer/ShaderProgram.h"
+#include "../Game/Level.h"
 
 #include <rapidjson/error/en.h>
 
@@ -27,7 +28,6 @@ ResourceManager::MapShaderPrograms  ResourceManager::m_programs;
 ResourceManager::MapTextures        ResourceManager::m_textures;
 ResourceManager::MapSprites         ResourceManager::m_sprites;
 ResourceManager::MapAnimatedSprites ResourceManager::m_animatedSprites;
-std::vector<std::string>        ResourceManager::m_level;
 rapidjson::Document                 ResourceManager::m_levelDocument;
 std::string                         ResourceManager::m_path;
 
@@ -352,21 +352,30 @@ bool ResourceManager::loadJSONLevels(const std::string& JSONLevelPath)
     return true;
 }
 
-const std::vector<std::string>& ResourceManager::loadLevel(unsigned int levelNumber)
+LevelDescription ResourceManager::loadLevel(unsigned int levelNumber)
 {
-    assert(m_levelDocument.HasMember("numberOfLevels") && "There is no 'numberOfLevels' in *.json file");
-    assert(m_levelDocument.HasMember("levels") && "There is no 'levels' in *.json file");
-    unsigned int numberOfLevels = m_levelDocument["numberOfLevels"].GetUint();
-    assert((levelNumber < numberOfLevels) && "levelNumber out of range");
-    rapidjson::Document::ConstMemberIterator levelIt = m_levelDocument.FindMember("levels");
-    const auto& currentLevel = levelIt->value.GetArray()[levelNumber];
+    assert(m_levelDocument.HasMember("layers") && "There is no 'layers' in *.json file");
+    assert(m_levelDocument.HasMember("height") && "There is no 'height' in *.json file");
+    assert(m_levelDocument.HasMember("width") && "There is no 'width' in *.json file");
 
-    const auto& description = currentLevel["description"].GetArray();
-    std::vector<std::string> levelRows;
-    for(const auto& currentRow : description)
+    unsigned int numberOfLevels = m_levelDocument["layers"].Size();
+    assert((levelNumber < numberOfLevels) && "levelNumber out of range");
+    rapidjson::Document::ConstMemberIterator levelIt = m_levelDocument.FindMember("layers");
+
+    const auto& currentLevel = levelIt->value.GetArray()[levelNumber];
+    const auto& description = currentLevel["data"].GetArray();
+    unsigned int width = currentLevel["width"].GetUint();
+    unsigned int height = currentLevel["height"].GetUint();
+    LevelDescription returnDescription;
+    returnDescription.objects.reserve(width * height);
+    returnDescription.width = width;
+    returnDescription.height = height;
+    returnDescription.ID = levelNumber;
+    std::cout << "description size() = " << description.Size() << std::endl;
+    for(const auto& value : description)
     {
-        levelRows.emplace_back(currentRow.GetString());
+        int a = value.GetInt();
+        returnDescription.objects.push_back(static_cast<uint8_t>(a));
     }
-    m_level = std::move(levelRows);
-    return m_level;
+    return std::move(returnDescription);
 }
