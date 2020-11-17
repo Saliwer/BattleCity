@@ -23,7 +23,7 @@
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void WindowResizeCallback(GLFWwindow* window, int width, int height);
 
-glm::ivec2 g_WindowSize = glm::ivec2(64*8, 64*8);
+glm::ivec2 g_WindowSize = glm::ivec2(32*8, 33*8);
 std::unique_ptr<Game> g_Game = std::make_unique<Game>(g_WindowSize);
 
 int main(int argc, char* argv[])
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     Physics::PhysicsEngine::init();
 
 
-    glfwSetWindowSize(window, (int)g_Game->getCurrentLevelWidth(), (int)g_Game->getCurrentLevelHeight());
+    glfwSetWindowSize(window, 2*(int)g_Game->getCurrentLevelWidth(), 2*(int)g_Game->getCurrentLevelHeight());
 
     RenderEngine::Renderer::setClearColor(0.f, 0.f, 0.f, 1.f);
     RenderEngine::Renderer::setDepthTest(true);
@@ -92,9 +92,9 @@ int main(int argc, char* argv[])
         // calculate delta time
         //---------------------
         auto currentTime = std::chrono::high_resolution_clock::now();
-        double duration = std::chrono::duration<double, std::micro>(currentTime - lastTime).count();
+        double duration = std::chrono::duration<double, std::milli>(currentTime - lastTime).count();
         lastTime = currentTime;
-        std::cout << "FPS = " << 1 / (duration/1e6) << std::endl;
+        std::cout << "FPS = " << 1 / (duration/1e3) << std::endl;
         // poll for and process events
         //----------------------------
         glfwPollEvents();

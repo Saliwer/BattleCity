@@ -371,7 +371,6 @@ LevelDescription ResourceManager::loadLevel(unsigned int levelNumber)
     returnDescription.width = width;
     returnDescription.height = height;
     returnDescription.ID = levelNumber;
-    std::cout << "description size() = " << description.Size() << std::endl;
     for(const auto& value : description)
     {
         int a = value.GetInt();

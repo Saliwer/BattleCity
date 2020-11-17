@@ -38,10 +38,10 @@ bool Game::init()
     if (!tankShaderProgram)
         return false;
 
-    m_pLevel = createLevel(0);
+    m_pLevel = createLevel(1);
     m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(),
                                      glm::vec2(Level::m_BLOCK_SIZE*2, Level::m_BLOCK_SIZE*2),
-                                     glm::vec2(0.f, 1.f), 0.8f);
+                                     glm::vec2(0.f, 1.f));
 
     Physics::PhysicsEngine::addDynamicObject(m_pTank);
     Physics::PhysicsEngine::setLevel(m_pLevel);
@@ -81,28 +81,37 @@ void Game::update(double deltaTime)
 
 void Game::processInput(double deltaTime)
 {
+    if (m_pTank->isSpawning())
+        return;
     if (m_keys[GLFW_KEY_W]){
+        m_pTank->move(true);
         m_pTank->setDirection(glm::vec2(0.f, 1.f));
         m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"));
-        m_pTank->setVelocity(m_pTank->getMaxVelocity());
+        m_pTank->getVelocity().y = m_pTank->getMaxSpeed();
     }
     else if (m_keys[GLFW_KEY_D]){
+        m_pTank->move(true);
         m_pTank->setDirection(glm::vec2(1.f, 0.f));
         m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Right"));
-        m_pTank->setVelocity(m_pTank->getMaxVelocity());
+        m_pTank->getVelocity().x = m_pTank->getMaxSpeed();
     }
     else if (m_keys[GLFW_KEY_S]){
+        m_pTank->move(true);
         m_pTank->setDirection(glm::vec2(0.f, -1.f));
         m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Bottom"));
-        m_pTank->setVelocity(m_pTank->getMaxVelocity());
+        m_pTank->getVelocity().y = m_pTank->getMaxSpeed();
     }
     else if(m_keys[GLFW_KEY_A]){
+        m_pTank->move(true);
         m_pTank->setDirection(glm::vec2(-1.f, 0.f));
         m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Left"));
-        m_pTank->setVelocity(m_pTank->getMaxVelocity());
+        m_pTank->getVelocity().x = m_pTank->getMaxSpeed();
     }
-    else
-        m_pTank->setVelocity(0.f);
+    else{
+        m_pTank->move(false);
+        m_pTank->getVelocity().x *= 0.85f;
+        m_pTank->getVelocity().y *= 0.85f;
+    }
 }
 
 void Game::setKey(int key, int action)

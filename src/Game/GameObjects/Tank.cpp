@@ -7,10 +7,10 @@
 extern glm::ivec2 g_WindowSize;
 
 Tank::Tank(const glm::vec2& position, const glm::vec2& size,
-           const glm::vec2& direction, float velocity, float layer)
-           : IDynamicGameObject(position, size, glm::normalize(direction), 0.f, layer)
+           const glm::vec2& direction, float layer)
+           : IDynamicGameObject(position, size, glm::normalize(direction), layer)
            , m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"))
-           , m_maxVelocity(velocity)
+           , m_maxSpeed(1.f)
            , m_pRespawnSprite(ResourceManager::getAnimatedSprite("respawn"))
            , m_pShieldSprite(ResourceManager::getAnimatedSprite("shield"))
            , m_isSpawning(true), m_hasShield(false)
@@ -19,9 +19,9 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
                                {
                                   m_isSpawning = false;
                                   m_hasShield = true;
-                                  m_shieldTimer.start(2000000);
+                                  m_shieldTimer.start(2000);
                                });
-    m_respawnTimer.start(2000000);
+    m_respawnTimer.start(2000);
     m_shieldTimer.setCallBack([this]()
                               {
                                  m_hasShield = false;
@@ -30,14 +30,10 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
     m_AABB.leftBottomXY = m_position;
     m_AABB.rightTopXY = m_position + m_size;
 }
+
 void Tank::setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite)
 {
     m_pMoveSprite = std::move(pMoveSprite);
-}
-void Tank::setVelocity(float velocity)
-{
-    if (!m_isSpawning)
-        IDynamicGameObject::setVelocity(velocity);
 }
 
 void Tank::render() const
@@ -62,7 +58,7 @@ void Tank::update(double deltaTime)
     }
     else
     {
-        if (m_velocity > 0)
+        if (m_move)
         {
             m_pMoveSprite->update(deltaTime);
         }

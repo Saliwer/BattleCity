@@ -3,6 +3,8 @@
 #include "../Game/GameObjects/IGameObject.h"
 #include "../Game/Level.h"
 
+#include <cmath>
+#include <iostream>
 namespace Physics
 {
     std::unordered_set<std::shared_ptr<IDynamicGameObject>> PhysicsEngine::m_dynamicObjects;
@@ -33,13 +35,23 @@ namespace Physics
     {
         for (auto& object : m_dynamicObjects)
         {
-            if (object->getVelocity() > 0)
+            if (object->isMoving())
             {
-                //delta in microseconds!
-                float dt = delta / 10000.f;
+                //delta in milli!
+                float dt = delta / 10.f;
                 glm::vec2 newPosition = object->getPosition() + dt
                                         * object->getVelocity() * object->getDirection();
-                //m_currentLevel->getObjectsInArea(object->getPosition(), object->getPosition() + object->getSize());
+                std::vector<std::shared_ptr<IStaticGameObject>> m_staticObjects =
+                    m_currentLevel->getObjectsInArea(newPosition,
+                                                     newPosition + object->getSize());
+                object->getPosition() = newPosition;
+            }
+            else if (object->getVelocity().x > 1e-10 || object->getVelocity().y > 1e-10)
+            {
+               //delta in milli!
+                float dt = delta / 10.f;
+                glm::vec2 newPosition = object->getPosition() + dt
+                                        * object->getVelocity() * object->getDirection();
                 object->getPosition() = newPosition;
             }
         }

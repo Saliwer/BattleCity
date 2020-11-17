@@ -200,15 +200,15 @@
             "frames"            :[
                 {
                     "subTexture"    : "water1_8x8",
-                    "duration"      : 500000000
+                    "duration"      : 20000
                 },
                 {
                     "subTexture"    : "water2_8x8",
-                    "duration"      : 500000000
+                    "duration"      : 20000
                 },
                 {
                     "subTexture"    : "water3_8x8",
-                    "duration"      : 500000000
+                    "duration"      : 20000
                 }
             ]
         },
@@ -250,11 +250,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "yellowType1_Top1",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "yellowType1_Top2",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -266,11 +266,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "yellowType1_Left1",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "yellowType1_Left2",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -282,11 +282,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "yellowType1_Bottom1",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "yellowType1_Bottom2",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -298,11 +298,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "yellowType1_Right1",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "yellowType1_Right2",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -326,27 +326,27 @@
             "frames"            : [
                 {
                     "subTexture"    : "respawn1",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "respawn2",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "respawn3",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "respawn4",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "respawn3",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "respawn2",
-                    "duration"      : 100000
+                    "duration"      : 100
                 }
             ]
         },
@@ -358,11 +358,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "shield1",
-                    "duration"      : 100000
+                    "duration"      : 100
                 },
                 {
                     "subTexture"    : "shield2",
-                    "duration"      : 100000
+                    "duration"      : 100
                 }
             ]
         },
@@ -374,15 +374,15 @@
             "frames"            : [
                 {
                     "subTexture"    : "explosion1",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "explosion2",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "explosion3",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -394,11 +394,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "bigExplosion1_topLeft",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "bigExplosion2_topLeft",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -410,11 +410,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "bigExplosion1_topRight",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "bigExplosion2_topRight",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -426,11 +426,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "bigExplosion1_bottomLeft",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "bigExplosion2_bottomLeft",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },
@@ -442,11 +442,11 @@
             "frames"            : [
                 {
                     "subTexture"    : "bigExplosion1_bottomRight",
-                    "duration"      : 200000
+                    "duration"      : 200
                 },
                 {
                     "subTexture"    : "bigExplosion2_bottomRight",
-                    "duration"      : 200000
+                    "duration"      : 200
                 }
             ]
         },

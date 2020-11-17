@@ -18,20 +18,21 @@ class Tank : public IDynamicGameObject
 {
 public:
     Tank(const glm::vec2& position, const glm::vec2& size,
-         const glm::vec2& direction, float velocity, float layer = 0.f);
+         const glm::vec2& direction, float layer = 0.f);
 
     virtual void render() const override;
     virtual void update(double deltaTime) override;
 
-    float getMaxVelocity() const { return m_maxVelocity; }
+    bool isSpawning() const { return m_isSpawning; }
+
+    float getMaxSpeed() const { return m_maxSpeed; }
     virtual Physics::AABB& getGlobalAABB() override;
 
     void setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite);
-    virtual void setVelocity(float velocity) override;
 
 private:
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pMoveSprite;
-    float                                           m_maxVelocity;
+    const float                                     m_maxSpeed;
 
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pRespawnSprite;
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pShieldSprite;

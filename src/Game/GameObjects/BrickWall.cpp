@@ -24,3 +24,7 @@ void BrickWall::render() const
     m_pSprites[static_cast<size_t>(m_eCurrentBrickState)]->render(m_position, m_size, m_layer);
 }
 
+bool BrickWall::checkCollision(std::shared_ptr<IDynamicGameObject>)
+{
+    return false;
+}

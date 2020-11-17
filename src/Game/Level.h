@@ -45,8 +45,8 @@ public:
     virtual void update(double delta);
     virtual const glm::ivec2& getEnemyRespawnSpot();
 
-    size_t getLevelWidth() const { return (m_blocksWidth+3) * m_BLOCK_SIZE; }
-    size_t getLevelHeight() const { return (m_blocksHeight+1) * m_BLOCK_SIZE; }
+    size_t getLevelWidth() const { return m_pixelWidth; }
+    size_t getLevelHeight() const { return m_pixelHeight; }
     const glm::ivec2& getPlayer1RespawnSpot() const { return m_playerRespawnSpot_1; }
     const glm::ivec2& getPlayer2RespawnSpot() const { return m_playerRespawnSpot_2; }
     bool isEnemyRespawnSpotAvailable() const { return m_activeRespawnSpots < m_countOfRespawnSpots; }

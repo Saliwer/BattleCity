@@ -106,8 +106,13 @@ Level::Level(const LevelDescription& levelDescription,
             int index = row * m_blocksWidth + column;
             uint8_t value = levelDescription.objects[index];
             EGameObjects description = static_cast<EGameObjects>(value);
-            if (description == EGameObjects::nothing || description == EGameObjects::border)
+            if (description == EGameObjects::border)
                 continue;
+            if (description == EGameObjects::eagle)
+            {
+                m_playerRespawnSpot_1 = glm::ivec2(position.x - 4 * m_BLOCK_SIZE, position.y);
+                m_playerRespawnSpot_2 = glm::ivec2(position.x + 4 * m_BLOCK_SIZE, position.y);
+            }
             m_staticLevelObjects.push_back(createGameObject(description,
                                                                position));
         }
@@ -117,35 +122,33 @@ Level::Level(const LevelDescription& levelDescription,
     position.x = 0.f;
     position.y = 0.f;
     size.x = static_cast<float>(m_pixelWidth);
-    size.y = static_cast<float>(2 * m_BLOCK_SIZE);
+    size.y = static_cast<float>(m_BLOCK_SIZE);
     m_staticLevelObjects.push_back(std::make_shared<Border>(position, size, 1.f));
     //left border
     position.x = 0.f;
-    position.y = static_cast<float>(2 * m_BLOCK_SIZE);
+    position.y = static_cast<float>(m_BLOCK_SIZE);
     size.x = static_cast<float>(2 * m_BLOCK_SIZE);
-    size.y = static_cast<float>(m_pixelHeight - 4 * m_BLOCK_SIZE);
+    size.y = static_cast<float>(m_pixelHeight - 2 * m_BLOCK_SIZE);
     m_staticLevelObjects.push_back(std::make_shared<Border>(position, size, 1.f));
     //top border
     position.x = 0.f;
-    position.y = static_cast<float>(m_pixelHeight - 2 * m_BLOCK_SIZE);
+    position.y = static_cast<float>(m_pixelHeight - m_BLOCK_SIZE);
     size.x = static_cast<float>(m_pixelWidth);
-    size.y = static_cast<float>(2 * m_BLOCK_SIZE);
+    size.y = static_cast<float>(m_BLOCK_SIZE);
     m_staticLevelObjects.push_back(std::make_shared<Border>(position, size, 1.f));
     //right borer
     position.x = static_cast<float>(m_pixelWidth - 4 * m_BLOCK_SIZE);
-    position.y = static_cast<float>(2 * m_BLOCK_SIZE);
+    position.y = static_cast<float>(m_BLOCK_SIZE);
     size.x = static_cast<float>(4 * m_BLOCK_SIZE);
-    size.y = static_cast<float>(m_pixelHeight - 4 * m_BLOCK_SIZE);
+    size.y = static_cast<float>(m_pixelHeight - 2 * m_BLOCK_SIZE);
     m_staticLevelObjects.push_back(std::make_shared<Border>(position, size, 1.f));
-
-    m_playerRespawnSpot_1 = glm::ivec2(22 * m_BLOCK_SIZE, 61 * m_BLOCK_SIZE);
-    m_playerRespawnSpot_2 = glm::ivec2(33 * m_BLOCK_SIZE, 61 * m_BLOCK_SIZE);
 }
 
 
 void Level::render() const
 {
     for (const auto& object : m_staticLevelObjects)
+        if (object)
             object->render();
 }
 
@@ -176,42 +179,29 @@ std::vector<std::shared_ptr<IStaticGameObject>>
 Level::getObjectsInArea(const glm::vec2& leftBottomXY,
                         const glm::vec2& rightTopXY)
 {
-    float levelWidth = (float)getLevelWidth();
-    float levelHeight = (float)getLevelHeight();
-
-    float xConverted = std::clamp(leftBottomXY.x - m_BLOCK_SIZE, 0.f, levelWidth);
-    float yConverted = std::clamp(levelHeight - leftBottomXY.y - m_BLOCK_SIZE /2.f, 0.f, levelHeight);
-    glm::vec2 convertedLeftBottomXY = glm::vec2(xConverted, yConverted);
-
-    xConverted = std::clamp(rightTopXY.x - m_BLOCK_SIZE, 0.f, levelWidth);
-    yConverted = std::clamp(levelHeight - rightTopXY.y - m_BLOCK_SIZE/2.f, 0.f, levelHeight);
-    glm::vec2 convertedRightTopXY = glm::vec2(xConverted, yConverted);
-
-    const uint8_t maxIntersectedObjects = 4;
+    const uint8_t maxIntersectedObjects = 9;
     std::vector<std::shared_ptr<IStaticGameObject>> output;
+    output.reserve(maxIntersectedObjects);
+    // 1 and 2 - border correction
+    size_t startX = std::clamp(static_cast<size_t>(leftBottomXY.x / m_BLOCK_SIZE) - 2
+                               , (size_t)0, m_blocksWidth - 6);
+    size_t endX = std::clamp(static_cast<size_t>(ceil(rightTopXY.x / m_BLOCK_SIZE)) - 2
+                             , (size_t)0, m_blocksWidth - 6);
 
-    size_t startX = static_cast<size_t>(convertedLeftBottomXY.x / m_BLOCK_SIZE);
-    size_t endX = static_cast<size_t>(convertedRightTopXY.x / m_BLOCK_SIZE);
+    size_t startY = std::clamp(static_cast<size_t>(leftBottomXY.y / m_BLOCK_SIZE) - 1
+                               , (size_t)0, m_blocksHeight - 2);
+    size_t endY = std::clamp(static_cast<size_t>(ceil(rightTopXY.y / m_BLOCK_SIZE)) - 1
+                             , (size_t)0, m_blocksHeight - 2);
 
-    size_t startY = static_cast<size_t>(convertedRightTopXY.y / m_BLOCK_SIZE);
-    size_t endY = static_cast<size_t>(convertedLeftBottomXY.y / m_BLOCK_SIZE);
-
-    std::cout << "startX = " << startX << "\t endX = " << endX << std::endl;
-    std::cout << "startY = " << startY << "\t endY = " << endY << std::endl;
-
-    for (size_t currentRow = startX; startX <= endX; ++startX)
+    for (size_t currentRow = startY; currentRow < endY; ++currentRow)
     {
-        for (size_t currentColumn = startY; startY <= endY; ++startY)
+        for (size_t currentColumn = startX; currentColumn < endX; ++currentColumn)
         {
-            std::shared_ptr<IStaticGameObject> object = m_staticLevelObjects[currentRow * m_blocksWidth + currentColumn];
+            std::shared_ptr<IStaticGameObject> object = m_staticLevelObjects[currentRow * (m_blocksWidth - 6) + currentColumn];
             if (object)
                 output.push_back(object);
         }
     }
-
-    std::cout << "output.size() = " << output.size() << std::endl;
-
-
     return output;
 }
 

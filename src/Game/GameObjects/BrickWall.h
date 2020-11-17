@@ -25,7 +25,7 @@ public:
               const glm::vec2& position, const glm::vec2& size, float layer = 0.f);
     virtual ~BrickWall();
     virtual void render() const override;
-
+    virtual bool checkCollision(std::shared_ptr<IDynamicGameObject>) override;
 private:
     EBrickWallState                                         m_eCurrentBrickState;
     std::array<std::shared_ptr<RenderEngine::Sprite>, 3>    m_pSprites;
