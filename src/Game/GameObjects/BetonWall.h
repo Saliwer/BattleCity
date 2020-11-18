@@ -22,6 +22,7 @@ public:
               const glm::vec2& position, const glm::vec2& size, float layer = 0);
     virtual ~BetonWall();
     virtual void render() const override;
+    virtual bool checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPos) override;
 
 private:
     EBetonWallState                         m_eCurrentBetonState;

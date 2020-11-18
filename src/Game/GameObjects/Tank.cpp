@@ -10,11 +10,15 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
            const glm::vec2& direction, float layer)
            : IDynamicGameObject(position, size, glm::normalize(direction), layer)
            , m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"))
-           , m_maxSpeed(1.f)
            , m_pRespawnSprite(ResourceManager::getAnimatedSprite("respawn"))
            , m_pShieldSprite(ResourceManager::getAnimatedSprite("shield"))
            , m_isSpawning(true), m_hasShield(false)
 {
+    m_slideSmooth = 0.95f;
+    m_normalSmooth = 0.85f;
+    m_currentSmooth = m_normalSmooth;
+    m_maxSpeed = 60.f;
+    m_currentSpeed = m_maxSpeed;
     m_respawnTimer.setCallBack([this]()
                                {
                                   m_isSpawning = false;

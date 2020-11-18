@@ -33,26 +33,39 @@ namespace Physics
 
     void PhysicsEngine::update(double delta)
     {
+        //delta in milli
+        float dt = delta / 1000.f;
         for (auto& object : m_dynamicObjects)
         {
-            if (object->isMoving())
+            if (object->isMoving() || object->isSliding())
             {
-                //delta in milli!
-                float dt = delta / 10.f;
+                // coordinate alignment
+                if (object->getDirection().x != 0.f)
+                {
+                    object->getPosition().y = static_cast<unsigned int>(object->getPosition().y / 8.f + 0.5f) * 8.f;
+                }
+                else if (object->getDirection().y != 0.f)
+                {
+                    object->getPosition().x = static_cast<unsigned int>(object->getPosition().x / 8.f + 0.5f) * 8.f;
+                }
+
                 glm::vec2 newPosition = object->getPosition() + dt
                                         * object->getVelocity() * object->getDirection();
-                std::vector<std::shared_ptr<IStaticGameObject>> m_staticObjects =
+                std::vector<std::shared_ptr<IStaticGameObject>> staticObjects =
                     m_currentLevel->getObjectsInArea(newPosition,
                                                      newPosition + object->getSize());
-                object->getPosition() = newPosition;
-            }
-            else if (object->getVelocity().x > 1e-10 || object->getVelocity().y > 1e-10)
-            {
-               //delta in milli!
-                float dt = delta / 10.f;
-                glm::vec2 newPosition = object->getPosition() + dt
-                                        * object->getVelocity() * object->getDirection();
-                object->getPosition() = newPosition;
+                bool collision = false;
+                for(auto& staticObject : staticObjects)
+                {
+                    if (staticObject->checkCollision(object, newPosition))
+                        collision = true;
+                }
+                if (!collision)
+                {
+                    object->getPosition() = newPosition;
+                    object->setCurrentSmooth(object->getNormalSmooth());
+                    object->setSpeed(object->getMaxSpeed());
+                }
             }
         }
     }

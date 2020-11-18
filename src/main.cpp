@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
     auto lastTime = std::chrono::high_resolution_clock::now();
     // game loop
     //----------
+    const double MAXFPS = (1.0 / 60) * 1e3;
     while (!glfwWindowShouldClose(window))
     {
         // calculate delta time
@@ -94,7 +95,9 @@ int main(int argc, char* argv[])
         auto currentTime = std::chrono::high_resolution_clock::now();
         double duration = std::chrono::duration<double, std::milli>(currentTime - lastTime).count();
         lastTime = currentTime;
+        //std::cout << duration / 1e3 << '\n';
         std::cout << "FPS = " << 1 / (duration/1e3) << std::endl;
+        std::this_thread::sleep_for(std::chrono::microseconds(static_cast<long>((MAXFPS - duration) * 1e3)));
         // poll for and process events
         //----------------------------
         glfwPollEvents();
@@ -113,6 +116,7 @@ int main(int argc, char* argv[])
         // Swap front and back buffers
         //----------------------------
         glfwSwapBuffers(window);
+
     }
 
     // clean-up before exit

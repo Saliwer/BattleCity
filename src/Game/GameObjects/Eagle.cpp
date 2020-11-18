@@ -22,3 +22,8 @@ void Eagle::render() const
     else
         m_pDeadSprite->render(m_position, m_size, m_layer);
 }
+
+bool Eagle::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPosition)
+{
+    return false;
+}

@@ -21,9 +21,9 @@ std::shared_ptr<IStaticGameObject> createGameObject(Level::EGameObjects descript
     switch (description) {
     case Level::EGameObjects::brick:
         return std::make_shared<BrickWall>(BrickWall::EBrickWallState::fullBrick, position, size);
-    case Level::EGameObjects::water:
-        return std::make_shared<BetonWall>(BetonWall::EBetonWallState::Unbroken, position, size);
     case Level::EGameObjects::beton:
+        return std::make_shared<BetonWall>(BetonWall::EBetonWallState::Unbroken, position, size);
+    case Level::EGameObjects::water:
         return std::make_shared<Water>(position, size);
     case Level::EGameObjects::tree:
         return std::make_shared<Tree>(position, size, -1.f);
@@ -202,6 +202,18 @@ Level::getObjectsInArea(const glm::vec2& leftBottomXY,
                 output.push_back(object);
         }
     }
+
+    //std::cout << "startX = " << startX << "\tendX = " << endX << std::endl;
+    //std::cout << "startY = " << startY << "\tendY = " << endY << std::endl;
+    // add borders if nedded
+    if (startY >= (m_blocksHeight - 2))
+        output.push_back(m_staticLevelObjects[m_staticLevelObjects.size() - 4]);
+    if (startX >= (m_blocksWidth - 6) )
+        output.push_back(m_staticLevelObjects[m_staticLevelObjects.size() - 3]);
+    if (endY >= (m_blocksHeight - 2))
+        output.push_back(m_staticLevelObjects[m_staticLevelObjects.size() - 2]);
+    if (endX >= (m_blocksWidth - 6))
+        output.push_back(m_staticLevelObjects[m_staticLevelObjects.size() - 1]);
     return output;
 }
 

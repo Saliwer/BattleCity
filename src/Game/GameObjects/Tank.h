@@ -25,14 +25,12 @@ public:
 
     bool isSpawning() const { return m_isSpawning; }
 
-    float getMaxSpeed() const { return m_maxSpeed; }
     virtual Physics::AABB& getGlobalAABB() override;
-
     void setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite);
 
 private:
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pMoveSprite;
-    const float                                     m_maxSpeed;
+
 
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pRespawnSprite;
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pShieldSprite;

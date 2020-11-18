@@ -16,6 +16,7 @@ public:
     virtual ~Water();
     virtual void render() const override;
     virtual void update(double delta) override;
+    virtual bool checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPos) override;
 
 private:
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pSprite;

@@ -24,7 +24,17 @@ void BrickWall::render() const
     m_pSprites[static_cast<size_t>(m_eCurrentBrickState)]->render(m_position, m_size, m_layer);
 }
 
-bool BrickWall::checkCollision(std::shared_ptr<IDynamicGameObject>)
+bool BrickWall::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPos)
 {
-    return false;
+    if (!hasIntersection(dynObject->getGlobalAABB()))
+        return false;
+    if (dynObject->getDirection().x > 0.f)
+        dynObject->getPosition().x = m_position.x - dynObject->getSize().x;
+    else if (dynObject->getDirection().x < 0.f)
+        dynObject->getPosition().x = m_position.x + m_size.x;
+    else if (dynObject->getDirection().y > 0.f)
+        dynObject->getPosition().y = m_position.y - dynObject->getSize().y;
+    else if (dynObject->getDirection().y < 0.f)
+        dynObject->getPosition().y = m_position.y + m_size.y;
+    return true;
 }
