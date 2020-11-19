@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
         double duration = std::chrono::duration<double, std::milli>(currentTime - lastTime).count();
         lastTime = currentTime;
         //std::cout << duration / 1e3 << '\n';
-        std::cout << "FPS = " << 1 / (duration/1e3) << std::endl;
+        //std::cout << "FPS = " << 1 / (duration/1e3) << std::endl;
         std::this_thread::sleep_for(std::chrono::microseconds(static_cast<long>((MAXFPS - duration) * 1e3)));
         // poll for and process events
         //----------------------------

@@ -38,7 +38,7 @@ bool Game::init()
     if (!tankShaderProgram)
         return false;
 
-    m_pLevel = createLevel(5);
+    m_pLevel = createLevel(4);
     m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(),
                                      glm::vec2(Level::m_BLOCK_SIZE*2, Level::m_BLOCK_SIZE*2),
                                      glm::vec2(0.f, 1.f));
@@ -84,33 +84,23 @@ void Game::processInput(double deltaTime)
     if (m_pTank->isSpawning())
         return;
     if (m_keys[GLFW_KEY_W]){
-        m_pTank->move(true);
-        m_pTank->setDirection(glm::vec2(0.f, 1.f));
-        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"));
-        m_pTank->getVelocity().y = m_pTank->getCurrentSpeed();
+        m_pTank->setOrientation(IDynamicGameObject::EOrientation::Top);
     }
     else if (m_keys[GLFW_KEY_D]){
-        m_pTank->move(true);
-        m_pTank->setDirection(glm::vec2(1.f, 0.f));
-        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Right"));
-        m_pTank->getVelocity().x = m_pTank->getCurrentSpeed();
+        m_pTank->setOrientation(IDynamicGameObject::EOrientation::Right);
     }
     else if (m_keys[GLFW_KEY_S]){
-        m_pTank->move(true);
-        m_pTank->setDirection(glm::vec2(0.f, -1.f));
-        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Bottom"));
-        m_pTank->getVelocity().y = m_pTank->getCurrentSpeed();
+        m_pTank->setOrientation(IDynamicGameObject::EOrientation::Bottom);
     }
     else if(m_keys[GLFW_KEY_A]){
-        m_pTank->move(true);
-        m_pTank->setDirection(glm::vec2(-1.f, 0.f));
-        m_pTank->setSprite(ResourceManager::getAnimatedSprite("tankYellowType1Left"));
-        m_pTank->getVelocity().x = m_pTank->getCurrentSpeed();
+        m_pTank->setOrientation(IDynamicGameObject::EOrientation::Left);
     }
     else{
-        m_pTank->move(false);
         m_pTank->getVelocity().x *= m_pTank->getCurrentSmooth();
         m_pTank->getVelocity().y *= m_pTank->getCurrentSmooth();
+    }
+    if(m_keys[GLFW_KEY_SPACE]){
+        m_pTank->fire();
     }
 }
 

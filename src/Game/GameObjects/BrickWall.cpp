@@ -2,6 +2,8 @@
 
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
+#include "Tank.h"
+#include "Bullet.h"
 
 
 BrickWall::BrickWall(EBrickWallState brickWallState,
@@ -28,13 +30,36 @@ bool BrickWall::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, co
 {
     if (!hasIntersection(dynObject->getGlobalAABB()))
         return false;
-    if (dynObject->getDirection().x > 0.f)
-        dynObject->getPosition().x = m_position.x - dynObject->getSize().x;
-    else if (dynObject->getDirection().x < 0.f)
-        dynObject->getPosition().x = m_position.x + m_size.x;
-    else if (dynObject->getDirection().y > 0.f)
-        dynObject->getPosition().y = m_position.y - dynObject->getSize().y;
-    else if (dynObject->getDirection().y < 0.f)
-        dynObject->getPosition().y = m_position.y + m_size.y;
+
+    switch(dynObject->getType())
+    {
+        case IDynamicGameObject::EDynamicType::TankType1:
+            handlingCollision(static_cast<Tank*>(dynObject.get()));
+            break;
+        case IDynamicGameObject::EDynamicType::Bullet:
+            handlingCollision(static_cast<Bullet*>(dynObject.get()));
+            break;
+        default:
+            //std::cerr << "BrickWall: collision with unknown dynamic object\n";
+            return false;
+    }
     return true;
+}
+
+void BrickWall::handlingCollision(Tank* tank)
+{
+    if (tank->getDirection().x > 0.f)
+        tank->getPosition().x = m_position.x - tank->getSize().x;
+    else if (tank->getDirection().x < 0.f)
+        tank->getPosition().x = m_position.x + m_size.x;
+    else if (tank->getDirection().y > 0.f)
+        tank->getPosition().y = m_position.y - tank->getSize().y;
+    else if (tank->getDirection().y < 0.f)
+        tank->getPosition().y = m_position.y + m_size.y;
+}
+
+void BrickWall::handlingCollision(Bullet* bullet)
+{
+    if (bullet->decLives() <= 0)
+        bullet->setLive(false);
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_set>
+#include <list>
 #include <memory>
 #include <glm/vec2.hpp>
 
@@ -35,7 +35,7 @@ namespace Physics
         static void setLevel(std::shared_ptr<Level> level);
         static void update(double delta);
     private:
-        static std::unordered_set<std::shared_ptr<IDynamicGameObject>> m_dynamicObjects;
+        static std::list<std::shared_ptr<IDynamicGameObject>> m_dynamicObjects;
         static std::shared_ptr<Level>   m_currentLevel;
     };
 }

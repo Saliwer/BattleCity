@@ -1,5 +1,5 @@
 #include "Tree.h"
-
+#include "Tank.h"
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
 
@@ -23,7 +23,25 @@ bool Tree::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const g
     if (!hasIntersection(dynObject->getGlobalAABB()))
         return false;
 
-    dynObject->setSpeed(dynObject->getMaxSpeed() * 0.6f);
-    dynObject->getPosition() = newPos;
+    switch(dynObject->getType())
+    {
+        case IDynamicGameObject::EDynamicType::TankType1:
+            handlingCollision(static_cast<Tank*>(dynObject.get()));
+            dynObject->getPosition() = newPos;
+            break;
+        case IDynamicGameObject::EDynamicType::Bullet:
+            return false;
+        default:
+            //std::cerr << "Tree: collision with unknown dynamic object\n";
+            return false;
+    }
     return true;
 }
+
+void Tree::handlingCollision(Tank* tank)
+{
+    tank->setSpeed(tank->getMaxSpeed() * 0.6f);
+}
+
+void Tree::handlingCollision(Bullet* bullet)
+{}

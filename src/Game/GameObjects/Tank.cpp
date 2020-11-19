@@ -1,7 +1,8 @@
 #include "Tank.h"
-
+#include "Bullet.h"
 #include "../../Renderer/AnimatedSprite.h"
 #include "../../Manager/ResourceManager.h"
+
 
 #include <iostream>
 extern glm::ivec2 g_WindowSize;
@@ -12,13 +13,15 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
            , m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"))
            , m_pRespawnSprite(ResourceManager::getAnimatedSprite("respawn"))
            , m_pShieldSprite(ResourceManager::getAnimatedSprite("shield"))
-           , m_isSpawning(true), m_hasShield(false)
+           , m_isSpawning(true), m_hasShield(false), m_bullet(nullptr)
 {
     m_slideSmooth = 0.95f;
-    m_normalSmooth = 0.85f;
+    m_normalSmooth = 0.55f;
     m_currentSmooth = m_normalSmooth;
     m_maxSpeed = 60.f;
     m_currentSpeed = m_maxSpeed;
+    m_orientation = IDynamicGameObject::EOrientation::Top;
+    m_type = IDynamicGameObject::EDynamicType::TankType1;
     m_respawnTimer.setCallBack([this]()
                                {
                                   m_isSpawning = false;
@@ -35,11 +38,6 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
     m_AABB.rightTopXY = m_position + m_size;
 }
 
-void Tank::setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite)
-{
-    m_pMoveSprite = std::move(pMoveSprite);
-}
-
 void Tank::render() const
 {
     if (m_isSpawning)
@@ -49,6 +47,8 @@ void Tank::render() const
         if (m_hasShield)
             m_pShieldSprite->render(m_position, m_size, m_layer);
         m_pMoveSprite->render(m_position, m_size, m_layer);
+        if (m_bullet)
+            m_bullet->render();
     }
 
 }
@@ -62,7 +62,7 @@ void Tank::update(double deltaTime)
     }
     else
     {
-        if (m_move)
+        if (isMoving() && !isSliding())
         {
             m_pMoveSprite->update(deltaTime);
         }
@@ -71,13 +71,45 @@ void Tank::update(double deltaTime)
             m_pShieldSprite->update(deltaTime);
             m_shieldTimer.update(deltaTime);
         }
+        if (m_bullet && !m_bullet->isAlive())
+            m_bullet = nullptr;
     }
 }
 
-Physics::AABB& Tank::getGlobalAABB()
+void Tank::setOrientation(EOrientation orientation)
 {
-    m_AABB.leftBottomXY = m_position;
-    m_AABB.rightTopXY = m_position + m_size;
-    return m_AABB;
+    m_orientation = orientation;
+    switch(m_orientation)
+    {
+        case IDynamicGameObject::EOrientation::Top:
+            m_direction = glm::vec2(0.f, 1.f);
+            m_pMoveSprite = ResourceManager::getAnimatedSprite("tankYellowType1Top");
+            m_velocity.y = m_currentSpeed;
+            break;
+        case IDynamicGameObject::EOrientation::Bottom:
+            m_direction = glm::vec2(0.f, -1.f);
+            m_pMoveSprite = ResourceManager::getAnimatedSprite("tankYellowType1Bottom");
+            m_velocity.y = m_currentSpeed;
+            break;
+        case IDynamicGameObject::EOrientation::Left:
+            m_direction = glm::vec2(-1.f, 0.f);
+            m_pMoveSprite = ResourceManager::getAnimatedSprite("tankYellowType1Left");
+            m_velocity.x = m_currentSpeed;
+            break;
+        case IDynamicGameObject::EOrientation::Right:
+            m_direction = glm::vec2(1.f, 0.f);
+            m_pMoveSprite = ResourceManager::getAnimatedSprite("tankYellowType1Right");
+            m_velocity.x = m_currentSpeed;
+            break;
+    }
 }
 
+void Tank::fire()
+{
+    if (!m_bullet)
+    {
+        glm::vec2 bulletPosition = m_position + m_size / 4.f + m_size * m_direction / 4.f;
+        m_bullet = std::make_shared<Bullet>(bulletPosition, glm::vec2(8.f, 8.f), m_direction, m_layer, m_orientation, m_maxSpeed * 1.5f);
+        Physics::PhysicsEngine::addDynamicObject(m_bullet);
+    }
+}

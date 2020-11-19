@@ -26,6 +26,11 @@ public:
     virtual ~BrickWall();
     virtual void render() const override;
     virtual bool checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPos) override;
+
+protected:
+    virtual void handlingCollision(Tank* tank) override;
+    virtual void handlingCollision(Bullet* bullet) override;
+
 private:
     EBrickWallState                                         m_eCurrentBrickState;
     std::array<std::shared_ptr<RenderEngine::Sprite>, 3>    m_pSprites;

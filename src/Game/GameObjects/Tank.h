@@ -11,7 +11,7 @@ namespace RenderEngine
 {
     class AnimatedSprite;
 }
-
+class Bullet;
 
 
 class Tank : public IDynamicGameObject
@@ -22,15 +22,14 @@ public:
 
     virtual void render() const override;
     virtual void update(double deltaTime) override;
+    void fire();
 
     bool isSpawning() const { return m_isSpawning; }
 
-    virtual Physics::AABB& getGlobalAABB() override;
-    void setSprite(std::shared_ptr<RenderEngine::AnimatedSprite> pMoveSprite);
+    virtual void setOrientation(EOrientation orientation) override;
 
 private:
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pMoveSprite;
-
 
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pRespawnSprite;
     std::shared_ptr<RenderEngine::AnimatedSprite>   m_pShieldSprite;
@@ -39,5 +38,5 @@ private:
     Timer                                           m_shieldTimer;
     bool                                            m_isSpawning;
     bool                                            m_hasShield;
-
+    std::shared_ptr<Bullet>                         m_bullet;
 };

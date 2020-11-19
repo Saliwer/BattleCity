@@ -39,7 +39,10 @@
                     "tree8x8",
                     "ice8x8",
                     "border",
-                    "bullet8x8"
+                    "topBullet8x8",
+                    "bottomBullet8x8",
+                    "leftBullet8x8",
+                    "rightBullet8x8"
             ]
         },
         {
@@ -237,10 +240,28 @@
             "initialSubTexture"    : "border"
         },
         {
-            "name"              : "bullet8x8",
+            "name"              : "topBullet8x8",
             "textureAtlas"      : "mapTexture8x8",
             "shader"            : "spriteShader",
-            "initialSubTexture"    : "bullet8x8"
+            "initialSubTexture"    : "topBullet8x8"
+        },
+        {
+            "name"              : "bottomBullet8x8",
+            "textureAtlas"      : "mapTexture8x8",
+            "shader"            : "spriteShader",
+            "initialSubTexture"    : "bottomBullet8x8"
+        },
+        {
+            "name"              : "leftBullet8x8",
+            "textureAtlas"      : "mapTexture8x8",
+            "shader"            : "spriteShader",
+            "initialSubTexture"    : "leftBullet8x8"
+        },
+        {
+            "name"              : "rightBullet8x8",
+            "textureAtlas"      : "mapTexture8x8",
+            "shader"            : "spriteShader",
+            "initialSubTexture"    : "rightBullet8x8"
         },
         {
             "name"              : "tankYellowType1Top",

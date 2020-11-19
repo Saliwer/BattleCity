@@ -1,5 +1,5 @@
 #include "Ice.h"
-
+#include "Tank.h"
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
 
@@ -23,7 +23,26 @@ bool Ice::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const gl
     if (!hasIntersection(dynObject->getGlobalAABB()))
         return false;
 
-    dynObject->getPosition() = newPos;
-    dynObject->setCurrentSmooth(dynObject->getSlideSmooth());
+    switch(dynObject->getType())
+    {
+        case IDynamicGameObject::EDynamicType::TankType1:
+            dynObject->getPosition() = newPos;
+            handlingCollision(static_cast<Tank*>(dynObject.get()));
+            break;
+        case IDynamicGameObject::EDynamicType::Bullet:
+            return false;
+        default:
+            //std::cerr << "Ice: collision with unknown dynamic object\n";
+            return false;
+    }
+
     return true;
 }
+
+void Ice::handlingCollision(Tank* tank)
+{
+    tank->setCurrentSmooth(tank->getSlideSmooth());
+}
+
+void Ice::handlingCollision(Bullet* bullet)
+{}

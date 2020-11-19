@@ -17,6 +17,10 @@ public:
     virtual void render() const override;
     virtual bool checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPos) override;
 
+protected:
+    virtual void handlingCollision(Tank* tank) override;
+    virtual void handlingCollision(Bullet* bullet) override;
+
 private:
     std::shared_ptr<RenderEngine::Sprite>  m_pSprite;
 };

@@ -1,5 +1,5 @@
 #include "Eagle.h"
-
+#include "Bullet.h"
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
 
@@ -25,5 +25,30 @@ void Eagle::render() const
 
 bool Eagle::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const glm::vec2& newPosition)
 {
-    return false;
+    if (!hasIntersection(dynObject->getGlobalAABB()))
+        return false;
+
+    switch(dynObject->getType())
+    {
+        case IDynamicGameObject::EDynamicType::TankType1:
+            return false;
+        case IDynamicGameObject::EDynamicType::Bullet:
+            handlingCollision(static_cast<Bullet*>(dynObject.get()));
+            break;
+        default:
+            //std::cerr << "Eagle: collision with unknown dynamic object\n";
+            return false;
+    }
+    return true;
 }
+
+void Eagle::handlingCollision(Tank* tank)
+{
+}
+
+void Eagle::handlingCollision(Bullet* bullet)
+{
+    bullet->setLive(false);
+    m_isAlive = false;
+}
+

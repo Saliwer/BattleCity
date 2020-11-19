@@ -25,8 +25,17 @@ IDynamicGameObject::IDynamicGameObject(const glm::vec2& position, const glm::vec
                                        : IGameObject(position, size, layer)
                                        , m_direction(direction)
                                        , m_velocity(0.f, 0.f)
-                                       , m_move(false)
+                                       , m_isAlive(true)
 {}
+
+Physics::AABB& IDynamicGameObject::getGlobalAABB()
+{
+    m_AABB.leftBottomXY = m_position;
+    m_AABB.rightTopXY = m_position + m_size;
+    return m_AABB;
+}
+
+
 
 IStaticGameObject::IStaticGameObject(const glm::vec2& position, const glm::vec2& size,
                                      float layer)

@@ -5,6 +5,9 @@
 #include <vector>
 #include "../../Physics/PhysicsEngine.h"
 
+class Tank;
+class Bullet;
+
 class IGameObject
 {
 public:
@@ -18,7 +21,7 @@ public:
     const glm::vec2& getPosition() const { return m_position; }
     glm::vec2& getPosition() { return m_position; }
     virtual Physics::AABB& getGlobalAABB() { return m_AABB; }
-    virtual const Physics::AABB& getGlobalAABB() const { return m_AABB; }
+    const Physics::AABB& getGlobalAABB() const { return m_AABB; }
 
     const glm::vec2& getSize() const { return m_size; }
     float getLayer() const { return m_layer; }
@@ -39,11 +42,26 @@ protected:
 class IDynamicGameObject : public IGameObject
 {
 public:
+    enum class EOrientation
+    {
+        Top,
+        Bottom,
+        Left,
+        Right
+    };
+
+    enum class EDynamicType
+    {
+        TankType1,
+        Bullet
+    };
+
     IDynamicGameObject(const glm::vec2& position, const glm::vec2& size,
                        const glm::vec2& direction, float layer = 0.f);
 
     virtual ~IDynamicGameObject() {}
 
+    virtual Physics::AABB& getGlobalAABB() override;
     const glm::vec2& getDirection() const { return m_direction; }
     glm::vec2& getVelocity() { return m_velocity; }
     float getMaxSpeed() const { return m_maxSpeed; }
@@ -51,15 +69,19 @@ public:
     float getSlideSmooth() const { return m_slideSmooth; }
     float getNormalSmooth() const { return m_normalSmooth; }
     float getCurrentSmooth() const { return m_currentSmooth; }
-    bool isMoving() const { return m_move; }
-    bool isSliding() const { return (m_velocity.x > 1e-5 || m_velocity.y > 1e-5); }
+    EDynamicType getType() const { return m_type; }
 
+    bool isSliding() const { return (m_velocity.x != m_maxSpeed) && (m_velocity.y != m_maxSpeed); }
+    bool isMoving() const { return (m_velocity.x > 1.f || m_velocity.y > 1.f); }
+    bool isAlive() const { return m_isAlive; }
 
     void setVelocity(const glm::vec2& velocity) { m_velocity = velocity; }
     void setDirection(const glm::vec2& direction) { m_direction = glm::normalize(direction); }
     void setSpeed(float value) { m_currentSpeed = value; }
-    void move(bool flag) { m_move = flag; }
     void setCurrentSmooth(float smoothValue) { m_currentSmooth = smoothValue; }
+    void setLive(bool live) { m_isAlive = live; }
+
+    virtual void setOrientation(EOrientation orientation) { m_orientation = orientation; };
     // TODO override collision for dynamic objects
     //virtual bool checkCollision(std::shared_ptr<IDynamicGameObject>) = 0;
 
@@ -68,11 +90,12 @@ protected:
     glm::vec2       m_velocity;
     float           m_maxSpeed;
     float           m_currentSpeed;
-    bool            m_move;
-    float           m_slideSmooth;
-    float           m_normalSmooth;
-    float           m_currentSmooth;
-
+    float           m_slideSmooth;      //TODO - transfer to Tank interface
+    float           m_normalSmooth;     //TODO - transfer to Tank interface
+    float           m_currentSmooth;    //TODO - transfer to Tank interface
+    bool            m_isAlive;
+    EOrientation    m_orientation;
+    EDynamicType    m_type;
 };
 
 class IStaticGameObject : public IGameObject
@@ -84,5 +107,10 @@ public:
 
     virtual void update(double delta) override {}
 
-    virtual bool checkCollision(std::shared_ptr<IDynamicGameObject>, const glm::vec2&){ return false; }
+    virtual bool checkCollision(std::shared_ptr<IDynamicGameObject> dynObject,
+                                const glm::vec2& newPosition) = 0;
+
+protected:
+    virtual void handlingCollision(Tank* tank) = 0;
+    virtual void handlingCollision(Bullet* bullet) = 0;
 };
