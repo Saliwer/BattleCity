@@ -38,7 +38,7 @@ bool Game::init()
     if (!tankShaderProgram)
         return false;
 
-    m_pLevel = createLevel(4);
+    m_pLevel = createLevel(5);
     m_pTank = std::make_shared<Tank>(m_pLevel->getPlayer1RespawnSpot(),
                                      glm::vec2(Level::m_BLOCK_SIZE*2, Level::m_BLOCK_SIZE*2),
                                      glm::vec2(0.f, 1.f));

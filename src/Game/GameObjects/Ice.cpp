@@ -43,6 +43,3 @@ void Ice::handlingCollision(Tank* tank)
 {
     tank->setCurrentSmooth(tank->getSlideSmooth());
 }
-
-void Ice::handlingCollision(Bullet* bullet)
-{}

@@ -3,6 +3,7 @@
 #include <glm/vec2.hpp>
 #include <glm/glm.hpp>
 #include <memory>
+#include <list>
 
 #include "IGameObject.h"
 #include "../../System/Timer.h"
@@ -38,5 +39,9 @@ private:
     Timer                                           m_shieldTimer;
     bool                                            m_isSpawning;
     bool                                            m_hasShield;
-    std::shared_ptr<Bullet>                         m_bullet;
+    std::list<std::shared_ptr<Bullet>>              m_bullets;
+    double                                          m_reloadingTime;
+    bool                                            m_isReloaded;
+    Timer                                           m_reloadingTimer;
+
 };

@@ -19,7 +19,7 @@ public:
 
 protected:
     virtual void handlingCollision(Tank* tank) override;
-    virtual void handlingCollision(Bullet* bullet) override;
+    virtual void handlingCollision(Bullet* bullet) override {}
 
 private:
     std::shared_ptr<RenderEngine::Sprite>  m_pSprite;

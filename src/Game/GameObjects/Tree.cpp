@@ -42,6 +42,3 @@ void Tree::handlingCollision(Tank* tank)
 {
     tank->setSpeed(tank->getMaxSpeed() * 0.6f);
 }
-
-void Tree::handlingCollision(Bullet* bullet)
-{}

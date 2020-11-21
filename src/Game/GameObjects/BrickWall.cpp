@@ -60,6 +60,5 @@ void BrickWall::handlingCollision(Tank* tank)
 
 void BrickWall::handlingCollision(Bullet* bullet)
 {
-    if (bullet->decLives() <= 0)
-        bullet->setLive(false);
+    bullet->blowUp();
 }

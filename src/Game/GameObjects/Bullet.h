@@ -5,10 +5,12 @@
 #include <memory>
 
 #include "IGameObject.h"
+#include "../../System/Timer.h"
 
 namespace RenderEngine
 {
     class Sprite;
+    class AnimatedSprite;
 }
 
 class Bullet : public IDynamicGameObject
@@ -20,8 +22,14 @@ public:
 
     virtual void render() const override;
     virtual void update(double deltaTime) override;
-    int decLives() { return --m_lives; }
+    void blowUp();
 private:
-    std::shared_ptr<RenderEngine::Sprite>   m_pMoveSprite;
-    int     m_lives;
+    std::shared_ptr<RenderEngine::Sprite>           m_pMoveSprite;
+    int                                             m_lives;
+    std::shared_ptr<RenderEngine::AnimatedSprite>   m_pExplosionSprite;
+    Timer                                           m_explodeTime;
+    bool                                            m_isExploding;
+    glm::vec2                                       m_explosionOffset;
+    static double                                   explosionTime;
+
 };

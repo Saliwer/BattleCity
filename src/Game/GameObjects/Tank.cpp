@@ -13,7 +13,7 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
            , m_pMoveSprite(ResourceManager::getAnimatedSprite("tankYellowType1Top"))
            , m_pRespawnSprite(ResourceManager::getAnimatedSprite("respawn"))
            , m_pShieldSprite(ResourceManager::getAnimatedSprite("shield"))
-           , m_isSpawning(true), m_hasShield(false), m_bullet(nullptr)
+           , m_isSpawning(true), m_hasShield(false), m_isReloaded(true)
 {
     m_slideSmooth = 0.95f;
     m_normalSmooth = 0.55f;
@@ -33,9 +33,11 @@ Tank::Tank(const glm::vec2& position, const glm::vec2& size,
                               {
                                  m_hasShield = false;
                               });
-
-    m_AABB.leftBottomXY = m_position;
-    m_AABB.rightTopXY = m_position + m_size;
+    m_reloadingTime = 1000.0;
+    m_reloadingTimer.setCallBack([this]()
+                                 {
+                                    m_isReloaded = true;
+                                 });
 }
 
 void Tank::render() const
@@ -47,8 +49,9 @@ void Tank::render() const
         if (m_hasShield)
             m_pShieldSprite->render(m_position, m_size, m_layer);
         m_pMoveSprite->render(m_position, m_size, m_layer);
-        if (m_bullet)
-            m_bullet->render();
+        for(auto& bullet : m_bullets)
+            if (bullet)
+                bullet->render();
     }
 
 }
@@ -71,9 +74,20 @@ void Tank::update(double deltaTime)
             m_pShieldSprite->update(deltaTime);
             m_shieldTimer.update(deltaTime);
         }
-        if (m_bullet && !m_bullet->isAlive())
-            m_bullet = nullptr;
+
+        for (auto bullet_it = m_bullets.begin(); bullet_it != m_bullets.end(); )
+        {
+            if ((*bullet_it)->isAlive())
+            {
+                (*bullet_it)->update(deltaTime);
+                ++bullet_it;
+            }
+            else
+                bullet_it = m_bullets.erase(bullet_it);
+        }
     }
+    if (!m_isReloaded)
+        m_reloadingTimer.update(deltaTime);
 }
 
 void Tank::setOrientation(EOrientation orientation)
@@ -106,10 +120,14 @@ void Tank::setOrientation(EOrientation orientation)
 
 void Tank::fire()
 {
-    if (!m_bullet)
+    if (m_isReloaded)
     {
         glm::vec2 bulletPosition = m_position + m_size / 4.f + m_size * m_direction / 4.f;
-        m_bullet = std::make_shared<Bullet>(bulletPosition, glm::vec2(8.f, 8.f), m_direction, m_layer, m_orientation, m_maxSpeed * 1.5f);
-        Physics::PhysicsEngine::addDynamicObject(m_bullet);
+        m_bullets.emplace_back(std::make_shared<Bullet>(bulletPosition, glm::vec2(8.f, 8.f),
+                                                        m_direction, m_layer, m_orientation,
+                                                        m_maxSpeed * 2.f));
+        Physics::PhysicsEngine::addDynamicObject(m_bullets.back());
+        m_reloadingTimer.start(m_reloadingTime);
+        m_isReloaded = false;
     }
 }

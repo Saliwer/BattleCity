@@ -54,6 +54,3 @@ void Water::handlingCollision(Tank* tank)
         tank->getPosition().y = m_position.y + m_size.y;
 }
 
-void Water::handlingCollision(Bullet* bullet)
-{}
-

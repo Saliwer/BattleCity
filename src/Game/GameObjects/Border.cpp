@@ -65,11 +65,7 @@ bool Border::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const
     return false;
 }
 
-void Border::handlingCollision(Tank* tank)
-{}
-
 void Border::handlingCollision(Bullet* bullet)
 {
-    if (bullet->decLives() <= 0)
-        bullet->setLive(false);
+    bullet->blowUp();
 }

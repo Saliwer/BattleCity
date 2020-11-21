@@ -40,7 +40,6 @@ namespace Physics
         {
             if ((*object)->isMoving())
             {
-                std::cout << "Velocity.x = " << (*object)->getVelocity().x << "\ty = " << (*object)->getVelocity().y << '\n';
                 // coordinate alignment
                 if ((*object)->getDirection().x != 0.f)
                 {

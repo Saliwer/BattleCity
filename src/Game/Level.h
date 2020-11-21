@@ -35,7 +35,7 @@ public:
         tree    = 20,
         ice     = 21,
         border  = 22,
-        eagle   = 31
+        eagle   = 31,
     };
 
     static constexpr unsigned int m_BLOCK_SIZE = 8;
@@ -64,6 +64,7 @@ protected:
     size_t                                          m_pixelHeight;
     glm::ivec2                                      m_playerRespawnSpot_1;
     glm::ivec2                                      m_playerRespawnSpot_2;
+    std::shared_ptr<IStaticGameObject>              m_eagle;
 
     std::vector<glm::ivec2>                         m_enemyRespawnSpots;
     std::unordered_set<size_t>                      m_engagedRespawnSpots;

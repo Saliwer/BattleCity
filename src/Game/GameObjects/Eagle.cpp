@@ -3,11 +3,12 @@
 #include "../../Renderer/Sprite.h"
 #include "../../Manager/ResourceManager.h"
 
-
-Eagle::Eagle(bool isAlive, const glm::vec2& position, const glm::vec2& size, float layer)
-            : m_isAlive(isAlive)
-            , IStaticGameObject(position, size, layer)
+#include <iostream>
+Eagle::Eagle(const glm::vec2& position, const glm::vec2& size, float layer)
+            : IStaticGameObject(position, size, layer)
+            , m_isAlive(true)
 {
+    //m_AABB.rightTopXY = m_size / 2.f;
     m_pAliveSprite = ResourceManager::getSprite("eagle");
     m_pDeadSprite = ResourceManager::getSprite("deadEagle");
 }
@@ -27,7 +28,6 @@ bool Eagle::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const 
 {
     if (!hasIntersection(dynObject->getGlobalAABB()))
         return false;
-
     switch(dynObject->getType())
     {
         case IDynamicGameObject::EDynamicType::TankType1:
@@ -42,13 +42,9 @@ bool Eagle::checkCollision(std::shared_ptr<IDynamicGameObject> dynObject, const 
     return true;
 }
 
-void Eagle::handlingCollision(Tank* tank)
-{
-}
-
 void Eagle::handlingCollision(Bullet* bullet)
 {
-    bullet->setLive(false);
+    bullet->blowUp();
     m_isAlive = false;
 }
 

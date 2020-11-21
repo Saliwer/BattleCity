@@ -32,7 +32,7 @@ std::shared_ptr<IStaticGameObject> createGameObject(Level::EGameObjects descript
     case Level::EGameObjects::border:
         return std::make_shared<Border>(position, size, 1.f);
     case Level::EGameObjects::eagle:
-        return std::make_shared<Eagle>(true, position, size + glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE));
+        return std::make_shared<Eagle>(position, size + glm::vec2(Level::m_BLOCK_SIZE, Level::m_BLOCK_SIZE));
     case Level::EGameObjects::nothing:
         return nullptr;
     default:
@@ -96,6 +96,7 @@ Level::Level(const LevelDescription& levelDescription,
     m_pixelWidth = m_blocksWidth * m_BLOCK_SIZE;
     m_pixelHeight = m_blocksHeight * m_BLOCK_SIZE;
     m_staticLevelObjects.reserve(m_blocksWidth * m_blocksHeight);
+    size_t eagleIndex_1 = 0, eagleIndex_2 = 0, eagleIndex_3 = 0;
     for (int row = (int)m_blocksHeight - 1, i = 0; row >= 0; --row, ++i)
     {
         glm::vec2 position;
@@ -112,11 +113,22 @@ Level::Level(const LevelDescription& levelDescription,
             {
                 m_playerRespawnSpot_1 = glm::ivec2(position.x - 4 * m_BLOCK_SIZE, position.y);
                 m_playerRespawnSpot_2 = glm::ivec2(position.x + 4 * m_BLOCK_SIZE, position.y);
+                m_eagle = createGameObject(description, position);
+                m_staticLevelObjects.push_back(m_eagle);
+                eagleIndex_1 = i * (m_blocksWidth - 6) + (column - 2);
+                eagleIndex_2 = i * (m_blocksWidth - 6) + (column - 1);
+                eagleIndex_3 = (i - 1) * (m_blocksWidth - 6) + (column - 1);
             }
-            m_staticLevelObjects.push_back(createGameObject(description,
-                                                               position));
+            else
+                m_staticLevelObjects.push_back(createGameObject(description,
+                                                                position));
         }
     }
+    //overwrite empty space around eagle
+    m_staticLevelObjects[eagleIndex_1] = m_eagle;
+    m_staticLevelObjects[eagleIndex_2] = m_eagle;
+    m_staticLevelObjects[eagleIndex_3] = m_eagle;
+
     //bottom border
     glm::vec2 position, size;
     position.x = 0.f;
@@ -179,7 +191,7 @@ std::vector<std::shared_ptr<IStaticGameObject>>
 Level::getObjectsInArea(const glm::vec2& leftBottomXY,
                         const glm::vec2& rightTopXY)
 {
-    const uint8_t maxIntersectedObjects = 9;
+    const uint8_t maxIntersectedObjects = 10;
     std::vector<std::shared_ptr<IStaticGameObject>> output;
     output.reserve(maxIntersectedObjects);
     // 1 and 2 - border correction
@@ -205,7 +217,7 @@ Level::getObjectsInArea(const glm::vec2& leftBottomXY,
 
     //std::cout << "startX = " << startX << "\tendX = " << endX << std::endl;
     //std::cout << "startY = " << startY << "\tendY = " << endY << std::endl;
-    // add borders if nedded
+    // add borders and eagle if nedded
     if (startY >= (m_blocksHeight - 2))
         output.push_back(m_staticLevelObjects[m_staticLevelObjects.size() - 4]);
     if (startX >= (m_blocksWidth - 6) )

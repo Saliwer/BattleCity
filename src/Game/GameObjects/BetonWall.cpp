@@ -56,6 +56,5 @@ void BetonWall::handlingCollision(Tank* tank)
 
 void BetonWall::handlingCollision(Bullet* bullet)
 {
-    if (bullet->decLives() <= 0)
-        bullet->setLive(false);
+    bullet->blowUp();
 }
